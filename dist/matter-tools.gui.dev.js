@@ -121,7 +121,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       var Matter = __webpack_require__(1);
 
-      var Engine2D = Matter.Engine2D;
+      var Engine = Matter.Engine;
       var Detector = Matter.Detector;
       var Grid = Matter.Grid;
       var World = Matter.World;
@@ -304,7 +304,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           gravity.add(engine.world.gravity, 'x', -1, 1).step(0.01);
           gravity.add(engine.world.gravity, 'y', -1, 1).step(0.01);
           gravity.open();
-          var physics = datGui.addFolder('Engine2D');
+          var physics = datGui.addFolder('Engine');
           physics.add(engine, 'enableSleeping');
           physics.add(engine.timing, 'timeScale', 0, 1.2).step(0.05).listen();
           physics.add(engine, 'velocityIterations', 1, 10).step(1);
@@ -383,7 +383,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }
 
         World.clear(engine.world, true);
-        Engine2D.clear(engine); // add mouse constraint back in
+        Engine.clear(engine); // add mouse constraint back in
 
         if (mouseConstraint) {
           Composite.add(engine.world, mouseConstraint);

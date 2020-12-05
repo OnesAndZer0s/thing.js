@@ -92,7 +92,7 @@
             var ToolsCommon = __webpack_require__(3);
             var Serializer = __webpack_require__(2).Serializer;
             var Matter = __webpack_require__(1);
-            var Engine2D = Matter.Engine2D;
+            var Engine = Matter.Engine;
             var Detector = Matter.Detector;
             var Grid = Matter.Grid;
             var World = Matter.World;
@@ -272,7 +272,7 @@
                     gravity.add(engine.world.gravity, 'y', -1, 1).step(0.01);
                     gravity.open();
 
-                    var physics = datGui.addFolder('Engine2D');
+                    var physics = datGui.addFolder('Engine');
                     physics.add(engine, 'enableSleeping');
 
                     physics.add(engine.timing, 'timeScale', 0, 1.2).step(0.05).listen();
@@ -357,7 +357,7 @@
                 }
 
                 World.clear(engine.world, true);
-                Engine2D.clear(engine);
+                Engine.clear(engine);
 
                 // add mouse constraint back in
                 if (mouseConstraint) {

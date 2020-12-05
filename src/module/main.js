@@ -19,7 +19,7 @@ Matter.Constraint = require('../constraint/Constraint');
 Matter.MouseConstraint = require('../constraint/MouseConstraint');
 
 Matter.Common = require('../core/Common');
-Matter.Engine2D = require('../core/Engine2D');
+Matter.Engine = require('../core/Engine');
 Matter.Events = require('../core/Events');
 Matter.Mouse = require('../core/Mouse');
 Matter.Runner = require('../core/Runner');
@@ -50,4 +50,4 @@ Matter.World.addComposite = Matter.Composite.addComposite;
 Matter.World.addBody = Matter.Composite.addBody;
 Matter.World.addConstraint = Matter.Composite.addConstraint;
 Matter.World.clear = Matter.Composite.clear;
-Matter.Engine2D.run = Matter.Runner.run;
+Matter.Engine.run = Matter.Runner.run;

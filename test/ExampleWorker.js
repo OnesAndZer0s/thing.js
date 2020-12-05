@@ -60,7 +60,7 @@ const runExample = options => {
   for (let i = 0; i < options.totalUpdates; i += 1) {
       const startTime = process.hrtime();
 
-      Matter.Engine2D.update(engine, 1000 / 60);
+      Matter.Engine.update(engine, 1000 / 60);
 
       const duration = process.hrtime(startTime);
       totalDuration += duration[0] * 1e9 + duration[1];

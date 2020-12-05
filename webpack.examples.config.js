@@ -24,7 +24,7 @@ ${alpha ? alphaInfo : ''}${pkg.homepage}
 License ${pkg.license}${!minimize ? '\n\n' + license : ''}`;
 
     return {
-        entry: './examples/index.js',
+        entry: './examples/2D/index.js',
         output: {
             library: 'Example',
             libraryTarget: 'umd',

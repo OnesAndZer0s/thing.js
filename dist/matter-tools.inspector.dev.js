@@ -221,7 +221,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         _initControls(inspector);
 
-        _initEngine2DEvents(inspector);
+        _initEngineEvents(inspector);
 
         _initTree(inspector);
 
@@ -243,7 +243,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         inspector.keyBindings.forEach(function (key) {
           km.unbind(key);
         });
-        Events.off(inspector.engine, 'beforeUpdate', inspector.beforeEngine2DUpdate);
+        Events.off(inspector.engine, 'beforeUpdate', inspector.beforeEngineUpdate);
 
         if (inspector.render) {
           Events.off(inspector.render, 'afterRender', inspector.afterRender);
@@ -539,13 +539,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         return Vector.add(inspector.mouse.position, inspector.offset);
       };
 
-      var _initEngine2DEvents = function _initEngine2DEvents(inspector) {
+      var _initEngineEvents = function _initEngineEvents(inspector) {
         var engine = inspector.engine,
             mouse = inspector.mouse,
             mousePosition = _getMousePosition(inspector),
             controls = inspector.controls;
 
-        inspector.beforeEngine2DUpdate = function () {
+        inspector.beforeEngineUpdate = function () {
           // update mouse position reference
           mousePosition = _getMousePosition(inspector);
           var mouseDelta = mousePosition.x - inspector.mousePrevPosition.x,
@@ -615,7 +615,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           inspector.mousePrevPosition = Common.clone(mousePosition);
         };
 
-        Events.on(inspector.engine, 'beforeUpdate', inspector.beforeEngine2DUpdate);
+        Events.on(inspector.engine, 'beforeUpdate', inspector.beforeEngineUpdate);
 
         if (inspector.mouseConstraint) {
           Events.on(inspector.mouseConstraint, 'mouseup', function () {

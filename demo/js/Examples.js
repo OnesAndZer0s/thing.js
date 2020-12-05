@@ -1,5 +1,5 @@
 /*!
- * matter-js-examples 0.14.2 by @liabru 2020-12-05
+ * matter-js-examples 0.14.2 by @liabru 2021-01-15
  * http://brm.io/matter-js/
  * License MIT
  * 
@@ -2477,18 +2477,22 @@ if (true) {
 /* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
+//https://github.com/liabru/matter-attractors/blob/master/docs/examples/gravity.js
+//https://github.com/liabru/matter-attractors/blob/master/index.js
+
 var Example = Example || {};
 
 Example.gravity = function() {
     var Engine = Matter.Engine,
         Render = Matter.Render,
         Runner = Matter.Runner,
-        Composites = Matter.Composites,
+        Body = Matter.Body,
         Common = Matter.Common,
         MouseConstraint = Matter.MouseConstraint,
         Mouse = Matter.Mouse,
         World = Matter.World,
-        Bodies = Matter.Bodies;
+        Bodies = Matter.Bodies,
+        Attractors = Matter.Attractors;
 
     // create engine
     var engine = Engine.create(),
@@ -2499,9 +2503,8 @@ Example.gravity = function() {
         element: document.body,
         engine: engine,
         options: {
-            width: 800,
-            height: 600,
-            showVelocity: true,
+            width: Math.min(document.documentElement.clientWidth, 1024),
+            height: Math.min(document.documentElement.clientHeight, 1024),
             showAngleIndicator: true
         }
     });
@@ -2513,31 +2516,42 @@ Example.gravity = function() {
     Runner.run(runner, engine);
 
     // add bodies
-    World.add(world, [
-        Bodies.rectangle(400, 0, 800, 50, { isStatic: true }),
-        Bodies.rectangle(400, 600, 800, 50.5, { isStatic: true }),
-        Bodies.rectangle(800, 300, 50, 600, { isStatic: true }),
-        Bodies.rectangle(0, 300, 50, 600, { isStatic: true })
-    ]);
+    world.bodies = [];
+    world.gravity.scale = 0;
 
-    engine.world.gravity.y = -1;
-    
-    var stack = Composites.stack(50, 120, 11, 5, 0, 0, function(x, y) {
-        switch (Math.round(Common.random(0, 1))) {
+    // TODO: #1 everything breaks once timescale gets higher. :/
+    engine.timing.timeScale = 1;
 
-        case 0:
-            if (Common.random() < 0.8) {
-                return Bodies.rectangle(x, y, Common.random(20, 50), Common.random(20, 50));
-            } else {
-                return Bodies.rectangle(x, y, Common.random(80, 120), Common.random(20, 30));
+
+    for (var i = 0; i < 150; i += 1) {
+        var radius = Common.random(6, 10);
+
+        var body = Bodies.circle(
+            Common.random(10, render.options.width),
+            Common.random(10, render.options.height),
+            radius, {
+                mass: Common.random(10, 15),
+                frictionAir: 0,
+                attractors: [
+                    Body.gravity
+                ],
+                wrap: {
+                    min: { x: 0, y: 0 },
+                    max: { x: render.options.width, y: render.options.height }
+                }
+
             }
-        case 1:
-            return Bodies.polygon(x, y, Math.round(Common.random(1, 8)), Common.random(20, 50));
+        );
 
-        }
-    });
-    
-    World.add(world, stack);
+        var speed = 5;
+
+        Body.setVelocity(body, {
+            x: Common.random(-speed, speed),
+            y: Common.random(-speed, speed)
+        });
+
+        World.add(world, body);
+    }
 
     // add mouse control
     var mouse = Mouse.create(render.canvas),
@@ -2555,12 +2569,6 @@ Example.gravity = function() {
 
     // keep the mouse in sync with rendering
     render.mouse = mouse;
-
-    // fit the render viewport to the scene
-    Render.lookAt(render, {
-        min: { x: 0, y: 0 },
-        max: { x: 800, y: 600 }
-    });
 
     // context for MatterTools.Demo
     return {

@@ -1,9 +1,9 @@
 /**
 * The `Matter.Runner` module is an optional utility which provides a game loop, 
-* that handles continuously updating a `Matter.Engine2D` for you within a browser.
+* that handles continuously updating a `Matter.Engine` for you within a browser.
 * It is intended for development and debugging purposes, but may also be suitable for simple games.
 * If you are using your own game loop instead, then you do not need the `Matter.Runner` module.
-* Instead just call `Engine2D.update(engine, delta)` in your own loop.
+* Instead just call `Engine.update(engine, delta)` in your own loop.
 *
 * See the included usage [examples](https://github.com/liabru/matter-js/tree/master/examples).
 *
@@ -15,7 +15,7 @@ var Runner = {};
 module.exports = Runner;
 
 var Events = require('./Events');
-var Engine2D = require('./Engine2D');
+var Engine = require('./Engine');
 var Common = require('./Common');
 
 (function() {
@@ -76,7 +76,7 @@ var Common = require('./Common');
     };
 
     /**
-     * Continuously ticks a `Matter.Engine2D` by calling `Runner.tick` on the `requestAnimationFrame` event.
+     * Continuously ticks a `Matter.Engine` by calling `Runner.tick` on the `requestAnimationFrame` event.
      * @method run
      * @param {engine} engine
      */
@@ -102,7 +102,7 @@ var Common = require('./Common');
      * A game loop utility that updates the engine and renderer by one step (a 'tick').
      * Features delta smoothing, time correction and fixed or dynamic timing.
      * Triggers `beforeTick`, `tick` and `afterTick` events on the engine.
-     * Consider just `Engine2D.update(engine, delta)` if you're using your own loop.
+     * Consider just `Engine.update(engine, delta)` if you're using your own loop.
      * @method tick
      * @param {runner} runner
      * @param {engine} engine
@@ -176,7 +176,7 @@ var Common = require('./Common');
 
         // update
         Events.trigger(runner, 'beforeUpdate', event);
-        Engine2D.update(engine, delta, correction);
+        Engine.update(engine, delta, correction);
         Events.trigger(runner, 'afterUpdate', event);
 
         // render

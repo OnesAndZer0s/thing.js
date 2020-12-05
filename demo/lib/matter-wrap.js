@@ -150,17 +150,17 @@
                 // installs the plugin where `base` is `Matter`
                 // you should not need to call this directly.
                 install: function install(base) {
-                    base.after('Engine2D.update', function() {
-                        MatterWrap.Engine2D.update(this);
+                    base.after('Engine.update', function() {
+                        MatterWrap.Engine.update(this);
                     });
                 },
 
-                Engine2D: {
+                Engine: {
                     /**
                      * Updates the engine by wrapping bodies and composites inside `engine.world`.
                      * This is called automatically by the plugin.
-                     * @function MatterWrap.Engine2D.update
-                     * @param {Matter.Engine2D} engine The engine to update.
+                     * @function MatterWrap.Engine.update
+                     * @param {Matter.Engine} engine The engine to update.
                      * @returns {void} No return value.
                      */
                     update: function update(engine) {

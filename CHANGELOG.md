@@ -35,7 +35,7 @@
 * fix Vertices.chamfer radius argument, closes #467 ([3bceef4](https://github.com/liabru/matter-js/commit/3bceef4)), closes [#467](https://github.com/liabru/matter-js/issues/467)
 * improved docs for constraints on compound bodies, closes #442 ([3307760](https://github.com/liabru/matter-js/commit/3307760)), closes [#442](https://github.com/liabru/matter-js/issues/442)
 * moved all private functions to module namespaces ([64be5a5](https://github.com/liabru/matter-js/commit/64be5a5))
-* moved private Matter.Engine2D functions on to namespace, closes #523 ([9eae36f](https://github.com/liabru/matter-js/commit/9eae36f)), closes [#523](https://github.com/liabru/matter-js/issues/523)
+* moved private Matter.Engine functions on to namespace, closes #523 ([9eae36f](https://github.com/liabru/matter-js/commit/9eae36f)), closes [#523](https://github.com/liabru/matter-js/issues/523)
 * remove spelling mistake ([e5c4b47](https://github.com/liabru/matter-js/commit/e5c4b47))
 
 
@@ -181,7 +181,7 @@
 
 
 * added release:push:docs task ([04cbd1d](https://github.com/liabru/matter-js/commit/04cbd1d))
-* decouple Matter.Render from Matter.Engine2D ([de823eb](https://github.com/liabru/matter-js/commit/de823eb))
+* decouple Matter.Render from Matter.Engine ([de823eb](https://github.com/liabru/matter-js/commit/de823eb))
 * decouple Matter.RenderPixi ([72f90b9](https://github.com/liabru/matter-js/commit/72f90b9))
 * deprecated Matter.RenderPixi ([e8c899a](https://github.com/liabru/matter-js/commit/e8c899a))
 * deprecated Matter.RenderPixi ([a6b97cd](https://github.com/liabru/matter-js/commit/a6b97cd))
@@ -196,10 +196,10 @@
 
 
 * added readonly to docs for type property, closes #235 ([afd7531](https://github.com/liabru/matter-js/commit/afd7531)), closes [#235](https://github.com/liabru/matter-js/issues/235)
-* Engine2D uses provided world; fixes issue #230 ([158c404](https://github.com/liabru/matter-js/commit/158c404)), closes [#230](https://github.com/liabru/matter-js/issues/230)
+* Engine uses provided world; fixes issue #230 ([158c404](https://github.com/liabru/matter-js/commit/158c404)), closes [#230](https://github.com/liabru/matter-js/issues/230)
 * fix issue with removed bodies causing collisions ([23a773a](https://github.com/liabru/matter-js/commit/23a773a))
-* fix Matter.Engine2D.create docs to show element param is optional ([e2e7c0b](https://github.com/liabru/matter-js/commit/e2e7c0b))
-* handle missing options in Engine2D.create ([f36fe2c](https://github.com/liabru/matter-js/commit/f36fe2c))
+* fix Matter.Engine.create docs to show element param is optional ([e2e7c0b](https://github.com/liabru/matter-js/commit/e2e7c0b))
+* handle missing options in Engine.create ([f36fe2c](https://github.com/liabru/matter-js/commit/f36fe2c))
 * improved release tasks ([e13d2d2](https://github.com/liabru/matter-js/commit/e13d2d2))
 * Merge branch 'master' of github.com:liabru/matter-js ([d373172](https://github.com/liabru/matter-js/commit/d373172))
 * Merge pull request #237 from iamjoshua/master ([b724959](https://github.com/liabru/matter-js/commit/b724959)), closes [#230](https://github.com/liabru/matter-js/issues/230)
@@ -233,7 +233,7 @@
 ## 0.9.1 (2016-02-15)
 
 
-* added default for delta parameter in Engine2D.update, closes #200 ([490d232](https://github.com/liabru/matter-js/commit/490d232)), closes [#200](https://github.com/liabru/matter-js/issues/200)
+* added default for delta parameter in Engine.update, closes #200 ([490d232](https://github.com/liabru/matter-js/commit/490d232)), closes [#200](https://github.com/liabru/matter-js/issues/200)
 * added docs for body.render.opacity ([adcb610](https://github.com/liabru/matter-js/commit/adcb610))
 * added SVGPathSeg polyfill, closes #196 ([8fcb893](https://github.com/liabru/matter-js/commit/8fcb893)), closes [#196](https://github.com/liabru/matter-js/issues/196)
 * Adding the opacity attribute to be able to draw semi-transarent sprites ([5b755a1](https://github.com/liabru/matter-js/commit/5b755a1))
@@ -359,7 +359,7 @@
 * change gravity scale to variable rather than a constant ([a38b227](https://github.com/liabru/matter-js/commit/a38b227))
 * change main to edge build ([9d0e82b](https://github.com/liabru/matter-js/commit/9d0e82b))
 * change travis to only lint rather than full test (until tests are finished and documented) ([ce478cb](https://github.com/liabru/matter-js/commit/ce478cb))
-* change world.bounds to Infinity, remove world bounds check from Engine2D, closes #67 ([8b5192d](https://github.com/liabru/matter-js/commit/8b5192d)), closes [#67](https://github.com/liabru/matter-js/issues/67)
+* change world.bounds to Infinity, remove world bounds check from Engine, closes #67 ([8b5192d](https://github.com/liabru/matter-js/commit/8b5192d)), closes [#67](https://github.com/liabru/matter-js/issues/67)
 * changed Body._initProperties to use Body.setVertices ([2d04389](https://github.com/liabru/matter-js/commit/2d04389))
 * changed bower main to build/matter.js ([7412335](https://github.com/liabru/matter-js/commit/7412335))
 * changed certain Matter.Composite methods to private in docs ([8aa148d](https://github.com/liabru/matter-js/commit/8aa148d))
@@ -493,9 +493,9 @@
 * move Demo.* to Example.* ([b722012](https://github.com/liabru/matter-js/commit/b722012))
 * move license in build ([9ba8a2a](https://github.com/liabru/matter-js/commit/9ba8a2a))
 * move require statements below module export ([99c3bb3](https://github.com/liabru/matter-js/commit/99c3bb3))
-* moved collision events into Engine2D.update, changed collisionStart to trigger before collisions resol ([69b1d05](https://github.com/liabru/matter-js/commit/69b1d05))
-* moved Engine2D.run to Matter.Runner ([6911395](https://github.com/liabru/matter-js/commit/6911395))
-* moved engine.timing properties, tick events and Engine2D.render into Matter.Runner module ([dcdc43d](https://github.com/liabru/matter-js/commit/dcdc43d))
+* moved collision events into Engine.update, changed collisionStart to trigger before collisions resol ([69b1d05](https://github.com/liabru/matter-js/commit/69b1d05))
+* moved Engine.run to Matter.Runner ([6911395](https://github.com/liabru/matter-js/commit/6911395))
+* moved engine.timing properties, tick events and Engine.render into Matter.Runner module ([dcdc43d](https://github.com/liabru/matter-js/commit/dcdc43d))
 * pass width and height options to Pixi webGL renderer ([a9278fc](https://github.com/liabru/matter-js/commit/a9278fc))
 * publish to npm ([a12fbcb](https://github.com/liabru/matter-js/commit/a12fbcb))
 * refactor Bodies.fromVertices ([4a2c6e7](https://github.com/liabru/matter-js/commit/4a2c6e7))
@@ -507,7 +507,7 @@
 * removed complexity check in Bodies.fromVertices, enforce clockwise sort ([2d1ef0d](https://github.com/liabru/matter-js/commit/2d1ef0d))
 * removed Detector.bruteForce ([e04de5f](https://github.com/liabru/matter-js/commit/e04de5f))
 * removed engine.broadphase.current, removed engine.broadphase.instance, changed engine.broadphase to  ([6dd0c05](https://github.com/liabru/matter-js/commit/6dd0c05))
-* removed engine.input, removed Engine2D mouse events, added MouseConstraint mouse events ([fb5d899](https://github.com/liabru/matter-js/commit/fb5d899))
+* removed engine.input, removed Engine mouse events, added MouseConstraint mouse events ([fb5d899](https://github.com/liabru/matter-js/commit/fb5d899))
 * removed line width change from Body.setStatic ([04955bb](https://github.com/liabru/matter-js/commit/04955bb))
 * removed Matter.Metrics from release builds (now dev only) ([968bba2](https://github.com/liabru/matter-js/commit/968bba2))
 * removed old build ([a068bec](https://github.com/liabru/matter-js/commit/a068bec))
@@ -610,7 +610,7 @@
 - added integration of chamfer to body factories
 - added engine.timing.isFixed option to disable dynamic timing
 - added render.bounds for translating and scaling views
-- easier use of Engine2D.update and Engine2D.render for those using custom game loops
+- easier use of Engine.update and Engine.render for those using custom game loops
 - fixed issues with time scaling
 - fixed error in calculation of centre of mass
 - removed Matter.Gui in preparation for the [MatterTools](https://github.com/liabru/matter-tools) project launch
@@ -640,7 +640,7 @@
 - added body.timeScale
 - added Vector.angle
 - added Vertices.chamfer for rounding corners
-- added Engine2D.render
+- added Engine.render
 - added engine.timing.isFixed option
 - added render.bounds for translating and scaling views
 - added Common.nextId
@@ -651,14 +651,14 @@
 #### Changed
 
 - changed engine.timing.timestamp to be simulation based rather than wall-clock based
-- changed correction to now be optional in Engine2D.update (defaults to 1)
+- changed correction to now be optional in Engine.update (defaults to 1)
 - changed Events.on to return callback
 - changed Events.off to accept callbacks for removal
 - changed vertices in Bounds.create to optional
 - changed engine.timeScale to engine.timing.timeScale
 - moved Matter.Inspector and Matter.Gui to the [MatterTools](https://github.com/liabru/matter-tools) project
 - moved event documentation to end of file for clarity
-- moved respective engine event triggers into Engine2D.update and Engine2D.render
+- moved respective engine event triggers into Engine.update and Engine.render
 
 #### Removed
 

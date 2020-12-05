@@ -65,7 +65,7 @@
 
     for (var i = 0; i < examples.length; i += 1) {
         var example = examples[i];
-        example.sourceLink = sourceLinkRoot + '/' + example.id + '.js';
+        //example.sourceLink = sourceLinkRoot + '/' + example.id + '.js';
         example.init = window.Example[example.id];
 
         if (!example.init) {

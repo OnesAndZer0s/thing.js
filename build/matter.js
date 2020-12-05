@@ -1,5 +1,5 @@
 /*!
- * matter-js 0.14.2 by @liabru 2020-12-21
+ * matter-js 0.14.2 by @liabru 2021-01-15
  * http://brm.io/matter-js/
  * License MIT
  * 
@@ -2424,7 +2424,7 @@ var Grid = __webpack_require__(9);
 
 /**
 * The `Matter.Body` module contains methods for creating and manipulating body models.
-* A `Matter.Body` is a rigid body that can be simulated by a `Matter.Engine2D`.
+* A `Matter.Body` is a rigid body that can be simulated by a `Matter.Engine`.
 * Factories for commonly used body configurations (such as rectangles, circles and other polygons) can be found in the module `Matter.Bodies`.
 *
 * See the included usage [examples](https://github.com/liabru/matter-js/tree/master/examples).
@@ -2508,7 +2508,11 @@ var Axes = __webpack_require__(15);
                 },
                 lineWidth: 0
             },
-            events: null,
+            events: {
+                collideStart: [],
+                collideEnd: [],
+                collideActive: []
+            },
             bounds: null,
             chamfer: null,
             circleRadius: 0,
@@ -2525,7 +2529,10 @@ var Axes = __webpack_require__(15);
             gravityConstant: 0.001,
             _original: null
         };
-
+        
+        // {
+        //     timestamp: timing.timestamp
+        // };
         var body = Common.extend(defaults, options);
 
         _initProperties(body, options);
@@ -2627,50 +2634,50 @@ var Axes = __webpack_require__(15);
             value = settings[property];
             switch (property) {
 
-            case 'isStatic':
-                Body.setStatic(body, value);
-                break;
-            case 'isSleeping':
-                Sleeping.set(body, value);
-                break;
-            case 'mass':
-                Body.setMass(body, value);
-                break;
-            case 'density':
-                Body.setDensity(body, value);
-                break;
-            case 'inertia':
-                Body.setInertia(body, value);
-                break;
-            case 'vertices':
-                Body.setVertices(body, value);
-                break;
-            case 'position':
-                Body.setPosition(body, value);
-                break;
-            case 'angle':
-                Body.setAngle(body, value);
-                break;
-            case 'velocity':
-                Body.setVelocity(body, value);
-                break;
-            case 'angularVelocity':
-                Body.setAngularVelocity(body, value);
-                break;
-            case 'linearDamping':
-                Body.setLinearDamping(body, value);
-                break;
-            case 'angularDamping':
-                Body.setAngularDamping(body, value);
-                break;
-            case 'parts':
-                Body.setParts(body, value);
-                break;
-            case 'centre':
-                Body.setCentre(body, value);
-                break;
-            default:
-                body[property] = value;
+                case 'isStatic':
+                    Body.setStatic(body, value);
+                    break;
+                case 'isSleeping':
+                    Sleeping.set(body, value);
+                    break;
+                case 'mass':
+                    Body.setMass(body, value);
+                    break;
+                case 'density':
+                    Body.setDensity(body, value);
+                    break;
+                case 'inertia':
+                    Body.setInertia(body, value);
+                    break;
+                case 'vertices':
+                    Body.setVertices(body, value);
+                    break;
+                case 'position':
+                    Body.setPosition(body, value);
+                    break;
+                case 'angle':
+                    Body.setAngle(body, value);
+                    break;
+                case 'velocity':
+                    Body.setVelocity(body, value);
+                    break;
+                case 'angularVelocity':
+                    Body.setAngularVelocity(body, value);
+                    break;
+                case 'linearDamping':
+                    Body.setLinearDamping(body, value);
+                    break;
+                case 'angularDamping':
+                    Body.setAngularDamping(body, value);
+                    break;
+                case 'parts':
+                    Body.setParts(body, value);
+                    break;
+                case 'centre':
+                    Body.setCentre(body, value);
+                    break;
+                default:
+                    body[property] = value;
 
             }
         }
@@ -3094,7 +3101,7 @@ var Axes = __webpack_require__(15);
         // update velocity with Verlet integration
         body.velocity.x = (velocityPrevX * frictionAir * correction) + (body.force.x / body.mass) * deltaTimeSquared;
         body.velocity.y = (velocityPrevY * frictionAir * correction) + (body.force.y / body.mass) * deltaTimeSquared;
-        if(body.linearDamping!==0){Vector.div(body.velocity, body.linearDamping);}
+        if (body.linearDamping !== 0) { Vector.div(body.velocity, body.linearDamping); }
 
         body.positionPrev.x = body.position.x;
         body.positionPrev.y = body.position.y;
@@ -3103,7 +3110,7 @@ var Axes = __webpack_require__(15);
 
         // update angular velocity with Verlet integration
         body.angularVelocity = (((body.angle - body.anglePrev) * frictionAir * correction) + (body.torque / body.inertia) * deltaTimeSquared);
-        if(body.angularDamping!==0){body.angularVelocity /= body.angularDamping;}
+        if (body.angularDamping !== 0) { body.angularVelocity /= body.angularDamping; }
         body.anglePrev = body.angle;
         body.angle += body.angularVelocity;
 
@@ -4809,7 +4816,7 @@ module.exports = Pair;
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
-* The `Matter.Render` module is a simple HTML5 canvas based renderer for visualising instances of `Matter.Engine2D`.
+* The `Matter.Render` module is a simple HTML5 canvas based renderer for visualising instances of `Matter.Engine`.
 * It is intended for development and debugging purposes, but may also be suitable for simple games.
 * It includes a number of drawing options including wireframe, vector with support for sprites and viewports.
 *
@@ -6243,7 +6250,7 @@ var Mouse = __webpack_require__(14);
      */
 
     /**
-     * A reference to the `Matter.Engine2D` instance to be used.
+     * A reference to the `Matter.Engine` instance to be used.
      *
      * @property engine
      * @type engine
@@ -8490,7 +8497,7 @@ var Body = __webpack_require__(6);
      */
     Engine.update = function(engine, delta, correction) {
         delta = delta || 1000 / 60;
-        correction = correction || 0.1;
+        correction = correction || 1;
 
         var world = engine.world,
             timing = engine.timing,
@@ -8611,9 +8618,17 @@ var Body = __webpack_require__(6);
             Sleeping.afterCollisions(pairs.list, timing.timeScale);
 
         // trigger collision events
-        if (pairs.collisionStart.length > 0)
+        if (pairs.collisionStart.length > 0) {
             Events.trigger(engine, 'collisionStart', { pairs: pairs.collisionStart });
-
+            pairs.collisionStart.map(function(pair) {
+                Events.trigger(pair.bodyA, 'collideStart', { pair: pair });
+                Events.trigger(pair.bodyB, 'collideStart', { pair: pair });
+                pair.bodyA._mceOC &&
+                    pair.bodyA._mceOC(pair);
+                pair.bodyB._mceOC &&
+                    pair.bodyB._mceOC(pair);
+            });
+        }
         // iteratively resolve position between collisions
         Resolver.preSolvePosition(pairs.list);
         for (i = 0; i < engine.positionIterations; i++) {
@@ -8635,12 +8650,29 @@ var Body = __webpack_require__(6);
         }
 
         // trigger collision events
-        if (pairs.collisionActive.length > 0)
+        if (pairs.collisionActive.length > 0) {
             Events.trigger(engine, 'collisionActive', { pairs: pairs.collisionActive });
+            pairs.collisionActive.map(function(pair) {
+                Events.trigger(pair.bodyA, 'collideActive', { pair: pair });
+                Events.trigger(pair.bodyB, 'collideActive', { pair: pair });
+                pair.bodyA._mceOCA &&
+                    pair.bodyA._mceOCA(pair);
+                pair.bodyB._mceOCA &&
+                    pair.bodyB._mceOCA(pair);
+            });
+        }
 
-        if (pairs.collisionEnd.length > 0)
+        if (pairs.collisionEnd.length > 0) {
             Events.trigger(engine, 'collisionEnd', { pairs: pairs.collisionEnd });
-
+            pairs.collisionEnd.map(function(pair) {
+                Events.trigger(pair.bodyA, 'collideEnd', { pair: pair });
+                Events.trigger(pair.bodyB, 'collideEnd', { pair: pair });
+                pair.bodyA._mceOCE &&
+                    pair.bodyA._mceOCE(pair);
+                pair.bodyB._mceOCE &&
+                    pair.bodyB._mceOCE(pair);
+            });
+        }
         // @if DEBUG
         // update metrics log
         Metrics.update(engine.metrics, engine);
@@ -9053,7 +9085,7 @@ Matter.Constraint = __webpack_require__(8);
 Matter.MouseConstraint = __webpack_require__(27);
 
 Matter.Common = __webpack_require__(0);
-Matter.Engine2D = __webpack_require__(21);
+Matter.Engine = __webpack_require__(21);
 Matter.Events = __webpack_require__(4);
 Matter.Mouse = __webpack_require__(14);
 Matter.Runner = __webpack_require__(28);
@@ -9084,7 +9116,7 @@ Matter.World.addComposite = Matter.Composite.addComposite;
 Matter.World.addBody = Matter.Composite.addBody;
 Matter.World.addConstraint = Matter.Composite.addConstraint;
 Matter.World.clear = Matter.Composite.clear;
-Matter.Engine2D.run = Matter.Runner.run;
+Matter.Engine.run = Matter.Runner.run;
 
 
 /***/ }),
@@ -9595,10 +9627,10 @@ var Bounds = __webpack_require__(1);
 
 /**
 * The `Matter.Runner` module is an optional utility which provides a game loop, 
-* that handles continuously updating a `Matter.Engine2D` for you within a browser.
+* that handles continuously updating a `Matter.Engine` for you within a browser.
 * It is intended for development and debugging purposes, but may also be suitable for simple games.
 * If you are using your own game loop instead, then you do not need the `Matter.Runner` module.
-* Instead just call `Engine2D.update(engine, delta)` in your own loop.
+* Instead just call `Engine.update(engine, delta)` in your own loop.
 *
 * See the included usage [examples](https://github.com/liabru/matter-js/tree/master/examples).
 *
@@ -9610,7 +9642,7 @@ var Runner = {};
 module.exports = Runner;
 
 var Events = __webpack_require__(4);
-var Engine2D = __webpack_require__(21);
+var Engine = __webpack_require__(21);
 var Common = __webpack_require__(0);
 
 (function() {
@@ -9671,7 +9703,7 @@ var Common = __webpack_require__(0);
     };
 
     /**
-     * Continuously ticks a `Matter.Engine2D` by calling `Runner.tick` on the `requestAnimationFrame` event.
+     * Continuously ticks a `Matter.Engine` by calling `Runner.tick` on the `requestAnimationFrame` event.
      * @method run
      * @param {engine} engine
      */
@@ -9697,7 +9729,7 @@ var Common = __webpack_require__(0);
      * A game loop utility that updates the engine and renderer by one step (a 'tick').
      * Features delta smoothing, time correction and fixed or dynamic timing.
      * Triggers `beforeTick`, `tick` and `afterTick` events on the engine.
-     * Consider just `Engine2D.update(engine, delta)` if you're using your own loop.
+     * Consider just `Engine.update(engine, delta)` if you're using your own loop.
      * @method tick
      * @param {runner} runner
      * @param {engine} engine
@@ -9771,7 +9803,7 @@ var Common = __webpack_require__(0);
 
         // update
         Events.trigger(runner, 'beforeUpdate', event);
-        Engine2D.update(engine, delta, correction);
+        Engine.update(engine, delta, correction);
         Events.trigger(runner, 'afterUpdate', event);
 
         // render

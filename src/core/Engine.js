@@ -1,12 +1,12 @@
 /**
-* The `Matter.Engine` module contains methods for creating and manipulating engines.
-* An engine is a controller that manages updating the simulation of the world.
-* See `Matter.Runner` for an optional game loop utility.
-*
-* See the included usage [examples](https://github.com/liabru/matter-js/tree/master/examples).
-*
-* @class Engine
-*/
+ * The `Matter.Engine` module contains methods for creating and manipulating engines.
+ * An engine is a controller that manages updating the simulation of the world.
+ * See `Matter.Runner` for an optional game loop utility.
+ *
+ * See the included usage [examples](https://github.com/liabru/matter-js/tree/master/examples).
+ *
+ * @class Engine
+ */
 
 var Engine = {};
 
@@ -69,7 +69,7 @@ var Body = require('../body/Body');
                 element: element,
                 controller: Render
             };
-            
+
             engine.render = Common.extend(renderDefaults, engine.render);
         }
 
@@ -132,7 +132,51 @@ var Body = require('../body/Body');
 
         // get lists of all bodies and constraints, no matter what composites they are in
         var allBodies = Composite.allBodies(world),
-            allConstraints = Composite.allConstraints(world);
+            allConstraints = Composite.allConstraints(world),
+            allComposites = Composite.allComposites(world);
+
+        // WRAP
+        for (i = 0; i < allBodies.length; i += 1) {
+            var body = allBodies[i];
+
+            if (body.wrap) {
+                Body.wrap(body, body.wrap);
+            }
+        }
+
+        for (i = 0; i < allComposites.length; i += 1) {
+            var composite = allComposites[i];
+
+            if (composite.wrap) {
+                Composite.wrap(composite, composite.wrap);
+            }
+        }
+
+
+        // ATTRACTORS
+        for (let i = 0; i < allBodies.length; i += 1) {
+            let bodyA = allBodies[i],
+                attractors = bodyA.attractors;
+
+            if (attractors && attractors.length > 0) {
+                for (let j = i + 1; j < allBodies.length; j += 1) {
+                    let bodyB = allBodies[j];
+
+                    for (let k = 0; k < attractors.length; k += 1) {
+                        let attractor = attractors[k],
+                            forceVector = attractor;
+
+                        if (Common.isFunction(attractor)) {
+                            forceVector = attractor(bodyA, bodyB);
+                        }
+
+                        if (forceVector) {
+                            Body.applyForce(bodyB, bodyB.position, forceVector);
+                        }
+                    }
+                }
+            }
+        }
 
         // @if DEBUG
         // reset metrics logging
@@ -189,9 +233,17 @@ var Body = require('../body/Body');
             Sleeping.afterCollisions(pairs.list, timing.timeScale);
 
         // trigger collision events
-        if (pairs.collisionStart.length > 0)
+        if (pairs.collisionStart.length > 0) {
             Events.trigger(engine, 'collisionStart', { pairs: pairs.collisionStart });
-
+            pairs.collisionStart.map(function(pair) {
+                Events.trigger(pair.bodyA, 'collideStart', { pair: pair });
+                Events.trigger(pair.bodyB, 'collideStart', { pair: pair });
+                pair.bodyA._mceOC &&
+                    pair.bodyA._mceOC(pair);
+                pair.bodyB._mceOC &&
+                    pair.bodyB._mceOC(pair);
+            });
+        }
         // iteratively resolve position between collisions
         Resolver.preSolvePosition(pairs.list);
         for (i = 0; i < engine.positionIterations; i++) {
@@ -213,12 +265,29 @@ var Body = require('../body/Body');
         }
 
         // trigger collision events
-        if (pairs.collisionActive.length > 0)
+        if (pairs.collisionActive.length > 0) {
             Events.trigger(engine, 'collisionActive', { pairs: pairs.collisionActive });
+            pairs.collisionActive.map(function(pair) {
+                Events.trigger(pair.bodyA, 'collideActive', { pair: pair });
+                Events.trigger(pair.bodyB, 'collideActive', { pair: pair });
+                pair.bodyA._mceOCA &&
+                    pair.bodyA._mceOCA(pair);
+                pair.bodyB._mceOCA &&
+                    pair.bodyB._mceOCA(pair);
+            });
+        }
 
-        if (pairs.collisionEnd.length > 0)
+        if (pairs.collisionEnd.length > 0) {
             Events.trigger(engine, 'collisionEnd', { pairs: pairs.collisionEnd });
-
+            pairs.collisionEnd.map(function(pair) {
+                Events.trigger(pair.bodyA, 'collideEnd', { pair: pair });
+                Events.trigger(pair.bodyB, 'collideEnd', { pair: pair });
+                pair.bodyA._mceOCE &&
+                    pair.bodyA._mceOCE(pair);
+                pair.bodyB._mceOCE &&
+                    pair.bodyB._mceOCE(pair);
+            });
+        }
         // @if DEBUG
         // update metrics log
         Metrics.update(engine.metrics, engine);
@@ -231,7 +300,7 @@ var Body = require('../body/Body');
 
         return engine;
     };
-    
+
     /**
      * Merges two engines by keeping the configuration of `engineA` but replacing the world with the one from `engineB`.
      * @method merge
@@ -240,7 +309,7 @@ var Body = require('../body/Body');
      */
     Engine.merge = function(engineA, engineB) {
         Common.extend(engineA, engineB);
-        
+
         if (engineB.world) {
             engineA.world = engineB.world;
 
@@ -263,7 +332,7 @@ var Body = require('../body/Body');
      */
     Engine.clear = function(engine) {
         var world = engine.world;
-        
+
         Pairs.clear(engine.pairs);
 
         var broadphase = engine.broadphase;
@@ -304,7 +373,7 @@ var Body = require('../body/Body');
         if ((gravity.x === 0 && gravity.y === 0) || gravityScale === 0) {
             return;
         }
-        
+
         for (var i = 0; i < bodies.length; i++) {
             var body = bodies[i];
 
@@ -347,63 +416,63 @@ var Body = require('../body/Body');
      */
 
     /**
-    * Fired just before an update
-    *
-    * @event beforeUpdate
-    * @param {} event An event object
-    * @param {number} event.timestamp The engine.timing.timestamp of the event
-    * @param {} event.source The source object of the event
-    * @param {} event.name The name of the event
-    */
+     * Fired just before an update
+     *
+     * @event beforeUpdate
+     * @param {} event An event object
+     * @param {number} event.timestamp The engine.timing.timestamp of the event
+     * @param {} event.source The source object of the event
+     * @param {} event.name The name of the event
+     */
 
     /**
-    * Fired after engine update and all collision events
-    *
-    * @event afterUpdate
-    * @param {} event An event object
-    * @param {number} event.timestamp The engine.timing.timestamp of the event
-    * @param {} event.source The source object of the event
-    * @param {} event.name The name of the event
-    */
+     * Fired after engine update and all collision events
+     *
+     * @event afterUpdate
+     * @param {} event An event object
+     * @param {number} event.timestamp The engine.timing.timestamp of the event
+     * @param {} event.source The source object of the event
+     * @param {} event.name The name of the event
+     */
 
     /**
-    * Fired after engine update, provides a list of all pairs that have started to collide in the current tick (if any)
-    *
-    * @event collisionStart
-    * @param {} event An event object
-    * @param {} event.pairs List of affected pairs
-    * @param {number} event.timestamp The engine.timing.timestamp of the event
-    * @param {} event.source The source object of the event
-    * @param {} event.name The name of the event
-    */
+     * Fired after engine update, provides a list of all pairs that have started to collide in the current tick (if any)
+     *
+     * @event collisionStart
+     * @param {} event An event object
+     * @param {} event.pairs List of affected pairs
+     * @param {number} event.timestamp The engine.timing.timestamp of the event
+     * @param {} event.source The source object of the event
+     * @param {} event.name The name of the event
+     */
 
     /**
-    * Fired after engine update, provides a list of all pairs that are colliding in the current tick (if any)
-    *
-    * @event collisionActive
-    * @param {} event An event object
-    * @param {} event.pairs List of affected pairs
-    * @param {number} event.timestamp The engine.timing.timestamp of the event
-    * @param {} event.source The source object of the event
-    * @param {} event.name The name of the event
-    */
+     * Fired after engine update, provides a list of all pairs that are colliding in the current tick (if any)
+     *
+     * @event collisionActive
+     * @param {} event An event object
+     * @param {} event.pairs List of affected pairs
+     * @param {number} event.timestamp The engine.timing.timestamp of the event
+     * @param {} event.source The source object of the event
+     * @param {} event.name The name of the event
+     */
 
     /**
-    * Fired after engine update, provides a list of all pairs that have ended collision in the current tick (if any)
-    *
-    * @event collisionEnd
-    * @param {} event An event object
-    * @param {} event.pairs List of affected pairs
-    * @param {number} event.timestamp The engine.timing.timestamp of the event
-    * @param {} event.source The source object of the event
-    * @param {} event.name The name of the event
-    */
+     * Fired after engine update, provides a list of all pairs that have ended collision in the current tick (if any)
+     *
+     * @event collisionEnd
+     * @param {} event An event object
+     * @param {} event.pairs List of affected pairs
+     * @param {number} event.timestamp The engine.timing.timestamp of the event
+     * @param {} event.source The source object of the event
+     * @param {} event.name The name of the event
+     */
 
     /*
-    *
-    *  Properties Documentation
-    *
-    */
+     *
+     *  Properties Documentation
+     *
+     */
 
     /**
      * An integer `Number` that specifies the number of position iterations to perform each update.

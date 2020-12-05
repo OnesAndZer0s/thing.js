@@ -1,16 +1,16 @@
 "use strict";
 
 /**
-* The `Matter.Engine2D` module contains methods for creating and manipulating engines.
+* The `Matter.Engine` module contains methods for creating and manipulating engines.
 * An engine is a controller that manages updating the simulation of the world.
 * See `Matter.Runner` for an optional game loop utility.
 *
 * See the included usage [examples](https://github.com/liabru/matter-js/tree/master/examples).
 *
-* @class Engine2D
+* @class Engine
 */
-var Engine2D = {};
-module.exports = Engine2D;
+var Engine = {};
+module.exports = Engine;
 
 var World = require('../body/World');
 
@@ -45,14 +45,14 @@ var Body = require('../body/Body');
    * @param {object} [options]
    * @return {engine} engine
    */
-  Engine2D.create = function (element, options) {
+  Engine.create = function (element, options) {
     // options may be passed as the first (and only) argument
     options = Common.isElement(element) ? options : element;
     element = Common.isElement(element) ? element : null;
     options = options || {};
 
     if (element || options.render) {
-      Common.warn('Engine2D.create: engine.render is deprecated (see docs)');
+      Common.warn('Engine.create: engine.render is deprecated (see docs)');
     }
 
     var defaults = {
@@ -118,7 +118,7 @@ var Body = require('../body/Body');
    */
 
 
-  Engine2D.update = function (engine, delta, correction) {
+  Engine.update = function (engine, delta, correction) {
     delta = delta || 1000 / 60;
     correction = correction || 1;
     var world = engine.world,
@@ -143,10 +143,10 @@ var Body = require('../body/Body');
 
     if (engine.enableSleeping) Sleeping.update(allBodies, timing.timeScale); // applies gravity to all bodies
 
-    Engine2D._bodiesApplyGravity(allBodies, world.gravity); // update all body position and rotation by integration
+    Engine._bodiesApplyGravity(allBodies, world.gravity); // update all body position and rotation by integration
 
 
-    Engine2D._bodiesUpdate(allBodies, delta, timing.timeScale, correction, world.bounds); // update all constraints (first pass)
+    Engine._bodiesUpdate(allBodies, delta, timing.timeScale, correction, world.bounds); // update all constraints (first pass)
 
 
     Constraint.preSolveAll(allBodies);
@@ -221,7 +221,7 @@ var Body = require('../body/Body');
     Metrics.update(engine.metrics, engine); // @endif
     // clear force buffers
 
-    Engine2D._bodiesClearForces(allBodies);
+    Engine._bodiesClearForces(allBodies);
 
     Events.trigger(engine, 'afterUpdate', event);
     return engine;
@@ -234,12 +234,12 @@ var Body = require('../body/Body');
    */
 
 
-  Engine2D.merge = function (engineA, engineB) {
+  Engine.merge = function (engineA, engineB) {
     Common.extend(engineA, engineB);
 
     if (engineB.world) {
       engineA.world = engineB.world;
-      Engine2D.clear(engineA);
+      Engine.clear(engineA);
       var bodies = Composite.allBodies(engineA.world);
 
       for (var i = 0; i < bodies.length; i++) {
@@ -256,7 +256,7 @@ var Body = require('../body/Body');
    */
 
 
-  Engine2D.clear = function (engine) {
+  Engine.clear = function (engine) {
     var world = engine.world;
     Pairs.clear(engine.pairs);
     var broadphase = engine.broadphase;
@@ -275,7 +275,7 @@ var Body = require('../body/Body');
    */
 
 
-  Engine2D._bodiesClearForces = function (bodies) {
+  Engine._bodiesClearForces = function (bodies) {
     for (var i = 0; i < bodies.length; i++) {
       var body = bodies[i]; // reset force buffers
 
@@ -293,7 +293,7 @@ var Body = require('../body/Body');
    */
 
 
-  Engine2D._bodiesApplyGravity = function (bodies, gravity) {
+  Engine._bodiesApplyGravity = function (bodies, gravity) {
     var gravityScale = typeof gravity.scale !== 'undefined' ? gravity.scale : 0.001;
 
     if (gravity.x === 0 && gravity.y === 0 || gravityScale === 0) {
@@ -322,7 +322,7 @@ var Body = require('../body/Body');
    */
 
 
-  Engine2D._bodiesUpdate = function (bodies, deltaTime, timeScale, correction, worldBounds) {
+  Engine._bodiesUpdate = function (bodies, deltaTime, timeScale, correction, worldBounds) {
     for (var i = 0; i < bodies.length; i++) {
       var body = bodies[i];
       if (body.isStatic || body.isSleeping) continue;
@@ -451,7 +451,7 @@ var Body = require('../body/Body');
 
   /**
    * A `Number` that specifies the current simulation-time in milliseconds starting from `0`. 
-   * It is incremented on every `Engine2D.update` by the given `delta` argument. 
+   * It is incremented on every `Engine.update` by the given `delta` argument. 
    *
    * @property timing.timestamp
    * @type number
@@ -459,11 +459,11 @@ var Body = require('../body/Body');
    */
 
   /**
-   * An instance of a `Render` controller. The default value is a `Matter.Render` instance created by `Engine2D.create`.
-   * One may also develop a custom renderer module based on `Matter.Render` and pass an instance of it to `Engine2D.create` via `options.render`.
+   * An instance of a `Render` controller. The default value is a `Matter.Render` instance created by `Engine.create`.
+   * One may also develop a custom renderer module based on `Matter.Render` and pass an instance of it to `Engine.create` via `options.render`.
    *
    * A minimal custom renderer object must define at least three functions: `create`, `clear` and `world` (see `Matter.Render`).
-   * It is also possible to instead pass the _module_ reference via `options.render.controller` and `Engine2D.create` will instantiate one for you.
+   * It is also possible to instead pass the _module_ reference via `options.render.controller` and `Engine.create` will instantiate one for you.
    *
    * @property render
    * @type render
@@ -472,7 +472,7 @@ var Body = require('../body/Body');
    */
 
   /**
-   * An instance of a broadphase controller. The default value is a `Matter.Grid` instance created by `Engine2D.create`.
+   * An instance of a broadphase controller. The default value is a `Matter.Grid` instance created by `Engine.create`.
    *
    * @property broadphase
    * @type grid
