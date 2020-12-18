@@ -1,7 +1,7 @@
 var Example = Example || {};
 
 Example.sleeping = function() {
-    var Engine = Matter.Engine,
+    var Engine2D = Matter.Engine2D,
         Render = Matter.Render,
         Runner = Matter.Runner,
         Composites = Matter.Composites,
@@ -13,7 +13,7 @@ Example.sleeping = function() {
         Bodies = Matter.Bodies;
 
     // create engine
-    var engine = Engine.create({
+    var engine = Engine2D.create({
             enableSleeping: true
         }),
         world = engine.world;

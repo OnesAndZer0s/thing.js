@@ -1,6 +1,6 @@
 /**
 * The `Matter.Body` module contains methods for creating and manipulating body models.
-* A `Matter.Body` is a rigid body that can be simulated by a `Matter.Engine`.
+* A `Matter.Body` is a rigid body that can be simulated by a `Matter.Engine2D`.
 * Factories for commonly used body configurations (such as rectangles, circles and other polygons) can be found in the module `Matter.Bodies`.
 *
 * See the included usage [examples](https://github.com/liabru/matter-js/tree/master/examples).
@@ -44,6 +44,7 @@ var Axes = require('../geometry/Axes');
             parts: [],
             plugin: {},
             angle: 0,
+            reigon: null,
             vertices: Vertices.fromPath('L 0 0 L 40 0 L 40 40 L 0 40'),
             position: { x: 0, y: 0 },
             force: { x: 0, y: 0 },
@@ -94,6 +95,8 @@ var Axes = require('../geometry/Axes');
             area: 0,
             mass: 0,
             inertia: 0,
+            attractors: [],
+            gravityConstant: 0.001,
             _original: null
         };
 
@@ -149,7 +152,8 @@ var Axes = require('../geometry/Axes');
             parts: body.parts || [body],
             isStatic: body.isStatic,
             isSleeping: body.isSleeping,
-            parent: body.parent || body
+            parent: body.parent || body,
+            gravityConstant: body.gravityConstant || body
         });
 
         Vertices.rotate(body.vertices, body.angle, body.position);
@@ -197,44 +201,44 @@ var Axes = require('../geometry/Axes');
             value = settings[property];
             switch (property) {
 
-            case 'isStatic':
-                Body.setStatic(body, value);
-                break;
-            case 'isSleeping':
-                Sleeping.set(body, value);
-                break;
-            case 'mass':
-                Body.setMass(body, value);
-                break;
-            case 'density':
-                Body.setDensity(body, value);
-                break;
-            case 'inertia':
-                Body.setInertia(body, value);
-                break;
-            case 'vertices':
-                Body.setVertices(body, value);
-                break;
-            case 'position':
-                Body.setPosition(body, value);
-                break;
-            case 'angle':
-                Body.setAngle(body, value);
-                break;
-            case 'velocity':
-                Body.setVelocity(body, value);
-                break;
-            case 'angularVelocity':
-                Body.setAngularVelocity(body, value);
-                break;
-            case 'parts':
-                Body.setParts(body, value);
-                break;
-            case 'centre':
-                Body.setCentre(body, value);
-                break;
-            default:
-                body[property] = value;
+                case 'isStatic':
+                    Body.setStatic(body, value);
+                    break;
+                case 'isSleeping':
+                    Sleeping.set(body, value);
+                    break;
+                case 'mass':
+                    Body.setMass(body, value);
+                    break;
+                case 'density':
+                    Body.setDensity(body, value);
+                    break;
+                case 'inertia':
+                    Body.setInertia(body, value);
+                    break;
+                case 'vertices':
+                    Body.setVertices(body, value);
+                    break;
+                case 'position':
+                    Body.setPosition(body, value);
+                    break;
+                case 'angle':
+                    Body.setAngle(body, value);
+                    break;
+                case 'velocity':
+                    Body.setVelocity(body, value);
+                    break;
+                case 'angularVelocity':
+                    Body.setAngularVelocity(body, value);
+                    break;
+                case 'parts':
+                    Body.setParts(body, value);
+                    break;
+                case 'centre':
+                    Body.setCentre(body, value);
+                    break;
+                default:
+                    body[property] = value;
 
             }
         }
@@ -545,7 +549,7 @@ var Axes = require('../geometry/Axes');
                 sin = Math.sin(rotation),
                 dx = body.position.x - point.x,
                 dy = body.position.y - point.y;
-                
+
             Body.setPosition(body, {
                 x: point.x + (dx * cos - dy * sin),
                 y: point.y + (dx * sin + dy * cos)
@@ -609,7 +613,7 @@ var Axes = require('../geometry/Axes');
         }
 
         // handle circles
-        if (body.circleRadius) { 
+        if (body.circleRadius) {
             if (scaleX === scaleY) {
                 body.circleRadius *= scaleX;
             } else {
@@ -658,7 +662,7 @@ var Axes = require('../geometry/Axes');
             var part = body.parts[i];
 
             Vertices.translate(part.vertices, body.velocity);
-            
+
             if (i > 0) {
                 part.position.x += body.velocity.x;
                 part.position.y += body.velocity.y;
@@ -688,6 +692,49 @@ var Axes = require('../geometry/Axes');
         body.force.y += force.y;
         var offset = { x: position.x - body.position.x, y: position.y - body.position.y };
         body.torque += offset.x * force.y - offset.y * force.x;
+    };
+
+    /**
+     * Wraps the `body` position such that it always stays within the given bounds. 
+     * Upon crossing a boundary the body will appear on the opposite side of the bounds, 
+     * while maintaining its velocity.
+     * This is called automatically by the plugin.
+     * @function Body.wrap
+     * @param {Matter.Body} body The body to wrap.
+     * @param {Matter.Bounds} bounds The bounds to wrap the body inside.
+     * @returns {?Matter.Vector} The translation vector that was applied (only if wrapping was required).
+     */
+    Body.wrap = function(body, bounds) {
+        var translation = Bounds.wrap(body.bounds, bounds);
+
+        if (translation) {
+            Body.translate(body, translation);
+        }
+
+        return translation;
+    };
+
+    /**
+     * An attractor function that applies Newton's law of gravitation.
+     * Use this by pushing `MatterAttractors.Attractors.gravity` to your body's `body.plugin.attractors` array.
+     * The gravitational constant defaults to `0.001` which you can change 
+     * at `MatterAttractors.Attractors.gravityConstant`.
+     * @function Body.gravity
+     * @param {Matter.Body} bodyA The first body.
+     * @param {Matter.Body} bodyB The second body.
+     * @returns {void} No return value.
+     */
+    Body.gravity = function(bodyA, bodyB) {
+        // use Newton's law of gravitation
+        var bToA = Vector.sub(bodyB.position, bodyA.position),
+            distanceSq = Vector.magnitudeSquared(bToA) || 0.0001,
+            normal = Vector.normalise(bToA),
+            magnitude = -bodyA.gravityConstant * (bodyA.mass * bodyB.mass / distanceSq),
+            force = Vector.mult(normal, magnitude);
+
+        // to apply forces to both bodies
+        Body.applyForce(bodyA, bodyA.position, Vector.neg(force));
+        Body.applyForce(bodyB, bodyB.position, force);
     };
 
     /**
@@ -726,36 +773,36 @@ var Axes = require('../geometry/Axes');
     };
 
     /*
-    *
-    *  Events Documentation
-    *
-    */
+     *
+     *  Events Documentation
+     *
+     */
 
     /**
-    * Fired when a body starts sleeping (where `this` is the body).
-    *
-    * @event sleepStart
-    * @this {body} The body that has started sleeping
-    * @param {} event An event object
-    * @param {} event.source The source object of the event
-    * @param {} event.name The name of the event
-    */
+     * Fired when a body starts sleeping (where `this` is the body).
+     *
+     * @event sleepStart
+     * @this {body} The body that has started sleeping
+     * @param {} event An event object
+     * @param {} event.source The source object of the event
+     * @param {} event.name The name of the event
+     */
 
     /**
-    * Fired when a body ends sleeping (where `this` is the body).
-    *
-    * @event sleepEnd
-    * @this {body} The body that has ended sleeping
-    * @param {} event An event object
-    * @param {} event.source The source object of the event
-    * @param {} event.name The name of the event
-    */
+     * Fired when a body ends sleeping (where `this` is the body).
+     *
+     * @event sleepEnd
+     * @this {body} The body that has ended sleeping
+     * @param {} event An event object
+     * @param {} event.source The source object of the event
+     * @param {} event.name The name of the event
+     */
 
     /*
-    *
-    *  Properties Documentation
-    *
-    */
+     *
+     *  Properties Documentation
+     *
+     */
 
     /**
      * An integer `Number` uniquely identifying number generated in `Body.create` by `Common.nextId`.
@@ -1128,7 +1175,7 @@ var Axes = require('../geometry/Axes');
      * @property render.opacity
      * @type number
      * @default 1
-    */
+     */
 
     /**
      * An `Object` that defines the sprite properties to use when rendering, if any.
@@ -1143,7 +1190,7 @@ var Axes = require('../geometry/Axes');
      * @property render.sprite.texture
      * @type string
      */
-     
+
     /**
      * A `Number` that defines the scaling in the x-axis for the sprite, if any.
      *
@@ -1161,20 +1208,20 @@ var Axes = require('../geometry/Axes');
      */
 
     /**
-      * A `Number` that defines the offset in the x-axis for the sprite (normalised by texture width).
-      *
-      * @property render.sprite.xOffset
-      * @type number
-      * @default 0
-      */
+     * A `Number` that defines the offset in the x-axis for the sprite (normalised by texture width).
+     *
+     * @property render.sprite.xOffset
+     * @type number
+     * @default 0
+     */
 
     /**
-      * A `Number` that defines the offset in the y-axis for the sprite (normalised by texture height).
-      *
-      * @property render.sprite.yOffset
-      * @type number
-      * @default 0
-      */
+     * A `Number` that defines the offset in the y-axis for the sprite (normalised by texture height).
+     *
+     * @property render.sprite.yOffset
+     * @type number
+     * @default 0
+     */
 
     /**
      * A `Number` that defines the line width to use when rendering the body outline (if a sprite is not defined).
@@ -1211,7 +1258,7 @@ var Axes = require('../geometry/Axes');
      * @property axes
      * @type vector[]
      */
-     
+
     /**
      * A `Number` that _measures_ the area of the body's convex hull, calculated at creation by `Body.create`.
      *

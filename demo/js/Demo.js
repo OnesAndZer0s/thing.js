@@ -12,6 +12,7 @@
 (function() {
     var examples = [ 
         { name: 'Air Friction', id: 'airFriction' },
+        { name: 'Attractors', id: 'attractors' },
         { name: 'Avalanche', id: 'avalanche' },
         { name: 'Ball Pool', id: 'ballPool' },
         { name: 'Bridge', id: 'bridge' },
@@ -21,6 +22,7 @@
         { name: 'Chains', id: 'chains' },
         { name: 'Circle Stack', id: 'circleStack' },
         { name: 'Cloth', id: 'cloth' },
+        { name: 'Collision Events', id: 'collisionEvents' },
         { name: 'Collision Filtering', id: 'collisionFiltering' },
         { name: 'Composite Manipulation', id: 'compositeManipulation' },
         { name: 'Compound Bodies', id: 'compound' },
@@ -30,7 +32,7 @@
         { name: 'Double Pendulum', id: 'doublePendulum' },
         { name: 'Events', id: 'events' },
         { name: 'Friction', id: 'friction' },
-        { name: 'Reverse Gravity', id: 'gravity' },
+        { name: 'Gravity', id: 'gravity' },
         { name: 'Gyroscope', id: 'gyro' },
         { name: 'Manipulation', id: 'manipulation' },
         { name: 'Mixed Shapes', id: 'mixed' },
@@ -39,12 +41,14 @@
         { name: 'Pyramid', id: 'pyramid' },
         { name: 'Raycasting', id: 'raycasting' },
         { name: 'Restitution', id: 'restitution' },
+        { name: 'Reverse Gravity', id: 'revGravity' },
         { name: 'Rounded Corners (Chamfering)', id: 'rounded' },
         { name: 'Sensors', id: 'sensors' },
         { name: 'Sleeping', id: 'sleeping' },
         { name: 'Slingshot', id: 'slingshot' },
         { name: 'Soft Body', id: 'softBody' },
         { name: 'Sprites', id: 'sprites' },
+        { name: 'Springs', id: 'springs' },
         { name: 'Stack', id: 'stack' },
         { name: 'Static Friction', id: 'staticFriction' },
         { name: 'Stress', id: 'stress' },
@@ -53,7 +57,8 @@
         { name: 'Terrain', id: 'terrain' },
         { name: 'Time Scaling', id: 'timescale' },
         { name: 'Views', id: 'views' },
-        { name: 'Wrecking Ball', id: 'wreckingBall' } 
+        { name: 'Wrap', id: 'wrap' },
+        { name: 'Wrecking Ball', id: 'wreckingBall' }
     ];
 
     var sourceLinkRoot = 'https://github.com/liabru/matter-js/blob/master/examples';

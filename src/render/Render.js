@@ -1,5 +1,5 @@
 /**
-* The `Matter.Render` module is a simple HTML5 canvas based renderer for visualising instances of `Matter.Engine`.
+* The `Matter.Render` module is a simple HTML5 canvas based renderer for visualising instances of `Matter.Engine2D`.
 * It is intended for development and debugging purposes, but may also be suitable for simple games.
 * It includes a number of drawing options including wireframe, vector with support for sprites and viewports.
 *
@@ -1433,7 +1433,7 @@ var Mouse = require('../core/Mouse');
      */
 
     /**
-     * A reference to the `Matter.Engine` instance to be used.
+     * A reference to the `Matter.Engine2D` instance to be used.
      *
      * @property engine
      * @type engine

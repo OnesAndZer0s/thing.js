@@ -1,7 +1,7 @@
 var Example = Example || {};
 
 Example.svg = function() {
-    var Engine = Matter.Engine,
+    var Engine2D = Matter.Engine2D,
         Render = Matter.Render,
         Runner = Matter.Runner,
         Common = Matter.Common,
@@ -13,7 +13,7 @@ Example.svg = function() {
         Bodies = Matter.Bodies;
 
     // create engine
-    var engine = Engine.create(),
+    var engine = Engine2D.create(),
         world = engine.world;
 
     // create renderer

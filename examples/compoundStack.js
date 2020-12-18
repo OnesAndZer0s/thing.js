@@ -1,7 +1,7 @@
 var Example = Example || {};
 
 Example.compoundStack = function() {
-    var Engine = Matter.Engine,
+    var Engine2D = Matter.Engine2D,
         Render = Matter.Render,
         Runner = Matter.Runner,
         Body = Matter.Body,
@@ -12,7 +12,7 @@ Example.compoundStack = function() {
         Bodies = Matter.Bodies;
 
     // create engine
-    var engine = Engine.create(),
+    var engine = Engine2D.create(),
         world = engine.world;
 
     // create renderer

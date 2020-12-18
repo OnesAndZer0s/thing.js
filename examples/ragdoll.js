@@ -1,7 +1,7 @@
 var Example = Example || {};
 
 Example.ragdoll = function() {
-    var Engine = Matter.Engine,
+    var Engine2D = Matter.Engine2D,
         Events = Matter.Events,
         Render = Matter.Render,
         Runner = Matter.Runner,
@@ -17,7 +17,7 @@ Example.ragdoll = function() {
         Vector = Matter.Vector;
 
     // create engine
-    var engine = Engine.create(),
+    var engine = Engine2D.create(),
         world = engine.world;
 
     // create renderer

@@ -1,10 +1,12 @@
+// https://github.com/liabru/matter-js/pulls?utf8=%E2%9C%93&q=is%3Apr+author%3Abchevalier
+// yeah uh implement this :)
+
 var Matter = module.exports = require('../core/Matter');
 
 Matter.Body = require('../body/Body');
 Matter.Composite = require('../body/Composite');
 Matter.World = require('../body/World');
 
-Matter.Contact = require('../collision/Contact');
 Matter.Detector = require('../collision/Detector');
 Matter.Grid = require('../collision/Grid');
 Matter.Pairs = require('../collision/Pairs');
@@ -17,7 +19,7 @@ Matter.Constraint = require('../constraint/Constraint');
 Matter.MouseConstraint = require('../constraint/MouseConstraint');
 
 Matter.Common = require('../core/Common');
-Matter.Engine = require('../core/Engine');
+Matter.Engine2D = require('../core/Engine2D');
 Matter.Events = require('../core/Events');
 Matter.Mouse = require('../core/Mouse');
 Matter.Runner = require('../core/Runner');
@@ -48,4 +50,4 @@ Matter.World.addComposite = Matter.Composite.addComposite;
 Matter.World.addBody = Matter.Composite.addBody;
 Matter.World.addConstraint = Matter.Composite.addConstraint;
 Matter.World.clear = Matter.Composite.clear;
-Matter.Engine.run = Matter.Runner.run;
+Matter.Engine2D.run = Matter.Runner.run;

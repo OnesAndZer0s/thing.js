@@ -54,7 +54,7 @@ var Vector = require('../geometry/Vector');
                 axisBodyB = axisBodyA === bodyA ? bodyB : bodyA,
                 axes = [axisBodyA.axes[previousCollision.axisNumber]];
 
-            minOverlap = SAT._overlapAxes(axisBodyA.vertices, axisBodyB.vertices, axes);
+            minOverlap = _overlapAxes(axisBodyA.vertices, axisBodyB.vertices, axes);
             collision.reused = true;
 
             if (minOverlap.overlap <= 0) {
@@ -64,14 +64,14 @@ var Vector = require('../geometry/Vector');
         } else {
             // if we can't reuse a result, perform a full SAT test
 
-            overlapAB = SAT._overlapAxes(bodyA.vertices, bodyB.vertices, bodyA.axes);
+            overlapAB = _overlapAxes(bodyA.vertices, bodyB.vertices, bodyA.axes);
 
             if (overlapAB.overlap <= 0) {
                 collision.collided = false;
                 return collision;
             }
 
-            overlapBA = SAT._overlapAxes(bodyB.vertices, bodyA.vertices, bodyB.axes);
+            overlapBA = _overlapAxes(bodyB.vertices, bodyA.vertices, bodyB.axes);
 
             if (overlapBA.overlap <= 0) {
                 collision.collided = false;
@@ -120,7 +120,7 @@ var Vector = require('../geometry/Vector');
         collision.penetration.y = collision.normal.y * collision.depth; 
 
         // find support points, there is always either exactly one or two
-        var verticesB = SAT._findSupports(bodyA, bodyB, collision.normal),
+        var verticesB = _findSupports(bodyA, bodyB, collision.normal),
             supports = [];
 
         // find the supports from bodyB that are inside bodyA
@@ -132,7 +132,7 @@ var Vector = require('../geometry/Vector');
 
         // find the supports from bodyA that are inside bodyB
         if (supports.length < 2) {
-            var verticesA = SAT._findSupports(bodyB, bodyA, Vector.neg(collision.normal));
+            var verticesA = _findSupports(bodyB, bodyA, Vector.neg(collision.normal));
                 
             if (Vertices.contains(bodyB.vertices, verticesA[0]))
                 supports.push(verticesA[0]);
@@ -159,7 +159,7 @@ var Vector = require('../geometry/Vector');
      * @param {} axes
      * @return result
      */
-    SAT._overlapAxes = function(verticesA, verticesB, axes) {
+    var _overlapAxes = function(verticesA, verticesB, axes) {
         var projectionA = Vector._temp[0], 
             projectionB = Vector._temp[1],
             result = { overlap: Number.MAX_VALUE },
@@ -169,8 +169,8 @@ var Vector = require('../geometry/Vector');
         for (var i = 0; i < axes.length; i++) {
             axis = axes[i];
 
-            SAT._projectToAxis(projectionA, verticesA, axis);
-            SAT._projectToAxis(projectionB, verticesB, axis);
+            _projectToAxis(projectionA, verticesA, axis);
+            _projectToAxis(projectionB, verticesB, axis);
 
             overlap = Math.min(projectionA.max - projectionB.min, projectionB.max - projectionA.min);
 
@@ -197,7 +197,7 @@ var Vector = require('../geometry/Vector');
      * @param {} vertices
      * @param {} axis
      */
-    SAT._projectToAxis = function(projection, vertices, axis) {
+    var _projectToAxis = function(projection, vertices, axis) {
         var min = Vector.dot(vertices[0], axis),
             max = min;
 
@@ -224,7 +224,7 @@ var Vector = require('../geometry/Vector');
      * @param {} normal
      * @return [vector]
      */
-    SAT._findSupports = function(bodyA, bodyB, normal) {
+    var _findSupports = function(bodyA, bodyB, normal) {
         var nearestDistance = Number.MAX_VALUE,
             vertexToBody = Vector._temp[0],
             vertices = bodyB.vertices,

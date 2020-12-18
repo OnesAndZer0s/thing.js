@@ -1,7 +1,7 @@
 var Example = Example || {};
 
 Example.newtonsCradle = function() {
-    var Engine = Matter.Engine,
+    var Engine2D = Matter.Engine2D,
         Render = Matter.Render,
         Runner = Matter.Runner,
         Body = Matter.Body,
@@ -11,7 +11,7 @@ Example.newtonsCradle = function() {
         World = Matter.World;
 
     // create engine
-    var engine = Engine.create(),
+    var engine = Engine2D.create(),
         world = engine.world;
 
     // create renderer

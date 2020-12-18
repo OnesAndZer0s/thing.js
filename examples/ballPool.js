@@ -5,7 +5,7 @@ Example.ballPool = function() {
         'matter-wrap'
     );
     
-    var Engine = Matter.Engine,
+    var Engine2D = Matter.Engine2D,
         Render = Matter.Render,
         Runner = Matter.Runner,
         Composite = Matter.Composite,
@@ -17,7 +17,7 @@ Example.ballPool = function() {
         Bodies = Matter.Bodies;
 
     // create engine
-    var engine = Engine.create(),
+    var engine = Engine2D.create(),
         world = engine.world;
 
     // create renderer

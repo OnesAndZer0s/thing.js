@@ -49,7 +49,7 @@
         "Constraint": false,
         "MouseConstraint": false,
         "Common": false,
-        "Engine": false,
+        "Engine2D": false,
         "Mouse": false,
         "Sleeping": false,
         "Bodies": false,

@@ -1,12 +1,12 @@
 /**
-* The `Matter.Vertices` module contains methods for creating and manipulating sets of vertices.
-* A set of vertices is an array of `Matter.Vector` with additional indexing properties inserted by `Vertices.create`.
-* A `Matter.Body` maintains a set of vertices to represent the shape of the object (its convex hull).
-*
-* See the included usage [examples](https://github.com/liabru/matter-js/tree/master/examples).
-*
-* @class Vertices
-*/
+ * The `Matter.Vertices` module contains methods for creating and manipulating sets of vertices.
+ * A set of vertices is an array of `Matter.Vector` with additional indexing properties inserted by `Vertices.create`.
+ * A `Matter.Body` maintains a set of vertices to represent the shape of the object (its convex hull).
+ *
+ * See the included usage [examples](https://github.com/liabru/matter-js/tree/master/examples).
+ *
+ * @class Vertices
+ */
 
 var Vertices = {};
 
@@ -44,8 +44,15 @@ var Common = require('../core/Common');
                     y: point.y,
                     index: i,
                     body: body,
-                    isInternal: false
+                    isInternal: false,
+                    contact: null
                 };
+
+            vertex.contact = {
+                vertex: vertex,
+                normalImpulse: 0,
+                tangentImpulse: 0
+            };
 
             vertices.push(vertex);
         }
@@ -203,7 +210,7 @@ var Common = require('../core/Common');
             var vertice = vertices[i],
                 dx = vertice.x - point.x,
                 dy = vertice.y - point.y;
-                
+
             vertice.x = point.x + (dx * cos - dy * sin);
             vertice.y = point.y + (dx * sin + dy * cos);
         }
@@ -292,13 +299,13 @@ var Common = require('../core/Common');
                 continue;
             }
 
-            var prevNormal = Vector.normalise({ 
-                x: vertex.y - prevVertex.y, 
+            var prevNormal = Vector.normalise({
+                x: vertex.y - prevVertex.y,
                 y: prevVertex.x - vertex.x
             });
 
-            var nextNormal = Vector.normalise({ 
-                x: nextVertex.y - vertex.y, 
+            var nextNormal = Vector.normalise({
+                x: nextVertex.y - vertex.y,
                 y: vertex.x - nextVertex.x
             });
 
@@ -384,7 +391,7 @@ var Common = require('../core/Common');
             }
         }
 
-        if (flag !== 0){
+        if (flag !== 0) {
             return true;
         } else {
             return null;
@@ -401,7 +408,7 @@ var Common = require('../core/Common');
         // http://geomalgorithms.com/a10-_hull-1.html
 
         var upper = [],
-            lower = [], 
+            lower = [],
             vertex,
             i;
 
@@ -416,8 +423,8 @@ var Common = require('../core/Common');
         for (i = 0; i < vertices.length; i += 1) {
             vertex = vertices[i];
 
-            while (lower.length >= 2 
-                   && Vector.cross3(lower[lower.length - 2], lower[lower.length - 1], vertex) <= 0) {
+            while (lower.length >= 2 &&
+                Vector.cross3(lower[lower.length - 2], lower[lower.length - 1], vertex) <= 0) {
                 lower.pop();
             }
 
@@ -428,8 +435,8 @@ var Common = require('../core/Common');
         for (i = vertices.length - 1; i >= 0; i -= 1) {
             vertex = vertices[i];
 
-            while (upper.length >= 2 
-                   && Vector.cross3(upper[upper.length - 2], upper[upper.length - 1], vertex) <= 0) {
+            while (upper.length >= 2 &&
+                Vector.cross3(upper[upper.length - 2], upper[upper.length - 1], vertex) <= 0) {
                 upper.pop();
             }
 

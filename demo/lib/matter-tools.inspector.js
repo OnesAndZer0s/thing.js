@@ -165,7 +165,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 
 	  _initControls(inspector);
-	  _initEngineEvents(inspector);
+	  _initEngine2DEvents(inspector);
 	  _initTree(inspector);
 	  _initKeybinds(inspector);
 
@@ -188,7 +188,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    km.unbind(key);
 	  });
 
-	  Events.off(inspector.engine, 'beforeUpdate', inspector.beforeEngineUpdate);
+	  Events.off(inspector.engine, 'beforeUpdate', inspector.beforeEngine2DUpdate);
 
 	  if (inspector.render) {
 	    Events.off(inspector.render, 'afterRender', inspector.afterRender);
@@ -514,13 +514,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return Vector.add(inspector.mouse.position, inspector.offset);
 	};
 
-	var _initEngineEvents = function _initEngineEvents(inspector) {
+	var _initEngine2DEvents = function _initEngine2DEvents(inspector) {
 	  var engine = inspector.engine,
 	      mouse = inspector.mouse,
 	      mousePosition = _getMousePosition(inspector),
 	      controls = inspector.controls;
 
-	  inspector.beforeEngineUpdate = function () {
+	  inspector.beforeEngine2DUpdate = function () {
 	    // update mouse position reference
 	    mousePosition = _getMousePosition(inspector);
 
@@ -588,7 +588,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    inspector.mousePrevPosition = Common.clone(mousePosition);
 	  };
 
-	  Events.on(inspector.engine, 'beforeUpdate', inspector.beforeEngineUpdate);
+	  Events.on(inspector.engine, 'beforeUpdate', inspector.beforeEngine2DUpdate);
 
 	  if (inspector.mouseConstraint) {
 	    Events.on(inspector.mouseConstraint, 'mouseup', function () {
