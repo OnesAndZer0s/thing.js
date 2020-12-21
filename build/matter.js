@@ -1,7 +1,29 @@
 /*!
- *   matter-js 0.14.2 by @liabru (c) 2020-12-18
- *   http://brm.io/matter-js/
- *   License MIT
+ * matter-js 0.14.2 by @liabru 2020-12-21
+ * http://brm.io/matter-js/
+ * License MIT
+ * 
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) Liam Brummitt and contributors.
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -2497,6 +2519,8 @@ var Axes = __webpack_require__(15);
             area: 0,
             mass: 0,
             inertia: 0,
+            linearDamping: 0,
+            angularDamping: 0,
             attractors: [],
             gravityConstant: 0.001,
             _original: null
@@ -2603,44 +2627,50 @@ var Axes = __webpack_require__(15);
             value = settings[property];
             switch (property) {
 
-                case 'isStatic':
-                    Body.setStatic(body, value);
-                    break;
-                case 'isSleeping':
-                    Sleeping.set(body, value);
-                    break;
-                case 'mass':
-                    Body.setMass(body, value);
-                    break;
-                case 'density':
-                    Body.setDensity(body, value);
-                    break;
-                case 'inertia':
-                    Body.setInertia(body, value);
-                    break;
-                case 'vertices':
-                    Body.setVertices(body, value);
-                    break;
-                case 'position':
-                    Body.setPosition(body, value);
-                    break;
-                case 'angle':
-                    Body.setAngle(body, value);
-                    break;
-                case 'velocity':
-                    Body.setVelocity(body, value);
-                    break;
-                case 'angularVelocity':
-                    Body.setAngularVelocity(body, value);
-                    break;
-                case 'parts':
-                    Body.setParts(body, value);
-                    break;
-                case 'centre':
-                    Body.setCentre(body, value);
-                    break;
-                default:
-                    body[property] = value;
+            case 'isStatic':
+                Body.setStatic(body, value);
+                break;
+            case 'isSleeping':
+                Sleeping.set(body, value);
+                break;
+            case 'mass':
+                Body.setMass(body, value);
+                break;
+            case 'density':
+                Body.setDensity(body, value);
+                break;
+            case 'inertia':
+                Body.setInertia(body, value);
+                break;
+            case 'vertices':
+                Body.setVertices(body, value);
+                break;
+            case 'position':
+                Body.setPosition(body, value);
+                break;
+            case 'angle':
+                Body.setAngle(body, value);
+                break;
+            case 'velocity':
+                Body.setVelocity(body, value);
+                break;
+            case 'angularVelocity':
+                Body.setAngularVelocity(body, value);
+                break;
+            case 'linearDamping':
+                Body.setLinearDamping(body, value);
+                break;
+            case 'angularDamping':
+                Body.setAngularDamping(body, value);
+                break;
+            case 'parts':
+                Body.setParts(body, value);
+                break;
+            case 'centre':
+                Body.setCentre(body, value);
+                break;
+            default:
+                body[property] = value;
 
             }
         }
@@ -2927,6 +2957,26 @@ var Axes = __webpack_require__(15);
     };
 
     /**
+     * Sets the linear damping of the body instantly. Position, angle, force etc. are unchanged. See also `Body.applyForce`.
+     * @method setLinearDamping
+     * @param {body} body
+     * @param {vector} velocity
+     */
+    Body.setLinearDamping = function(body, damping) {
+        body.linearDamping = damping;
+    };
+
+    /**
+     * Sets the angular damping of the body instantly. Position, angle, force etc. are unchanged. See also `Body.applyForce`.
+     * @method setAngularDamping
+     * @param {body} body
+     * @param {number} velocity
+     */
+    Body.setAngularDamping = function(body, damping) {
+        body.angularDamping = damping;
+    };
+
+    /**
      * Moves a body by a given vector relative to its current position, without imparting any velocity.
      * @method translate
      * @param {body} body
@@ -3044,6 +3094,7 @@ var Axes = __webpack_require__(15);
         // update velocity with Verlet integration
         body.velocity.x = (velocityPrevX * frictionAir * correction) + (body.force.x / body.mass) * deltaTimeSquared;
         body.velocity.y = (velocityPrevY * frictionAir * correction) + (body.force.y / body.mass) * deltaTimeSquared;
+        if(body.linearDamping!==0){Vector.div(body.velocity, body.linearDamping);}
 
         body.positionPrev.x = body.position.x;
         body.positionPrev.y = body.position.y;
@@ -3051,7 +3102,8 @@ var Axes = __webpack_require__(15);
         body.position.y += body.velocity.y;
 
         // update angular velocity with Verlet integration
-        body.angularVelocity = ((body.angle - body.anglePrev) * frictionAir * correction) + (body.torque / body.inertia) * deltaTimeSquared;
+        body.angularVelocity = (((body.angle - body.anglePrev) * frictionAir * correction) + (body.torque / body.inertia) * deltaTimeSquared);
+        if(body.angularDamping!==0){body.angularVelocity /= body.angularDamping;}
         body.anglePrev = body.angle;
         body.angle += body.angularVelocity;
 
@@ -8229,6 +8281,7 @@ var Bounds = __webpack_require__(1);
             bodyA.angularVelocity = angularVelocityA;
             bodyB.angularVelocity = angularVelocityB;
 
+            
             var inverseMassA = bodyA.inverseMass,
                 inverseMassB = bodyB.inverseMass,
                 inverseInertiaA = bodyA.inverseInertia,
@@ -8437,7 +8490,7 @@ var Body = __webpack_require__(6);
      */
     Engine.update = function(engine, delta, correction) {
         delta = delta || 1000 / 60;
-        correction = correction || 1;
+        correction = correction || 0.1;
 
         var world = engine.world,
             timing = engine.timing,

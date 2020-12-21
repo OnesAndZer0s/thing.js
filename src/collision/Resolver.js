@@ -274,6 +274,7 @@ var Bounds = require('../geometry/Bounds');
             bodyA.angularVelocity = angularVelocityA;
             bodyB.angularVelocity = angularVelocityB;
 
+            
             var inverseMassA = bodyA.inverseMass,
                 inverseMassB = bodyB.inverseMass,
                 inverseInertiaA = bodyA.inverseInertia,

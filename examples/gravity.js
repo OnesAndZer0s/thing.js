@@ -25,7 +25,8 @@ Example.gravity = function() {
         engine: engine,
         options: {
             width: Math.min(document.documentElement.clientWidth, 1024),
-            height: Math.min(document.documentElement.clientHeight, 1024)
+            height: Math.min(document.documentElement.clientHeight, 1024),
+            showAngleIndicator: true
         }
     });
 
@@ -39,7 +40,9 @@ Example.gravity = function() {
     world.bodies = [];
     world.gravity.scale = 0;
 
-    engine.timing.timeScale = 1.5;
+    // TODO: #1 everything breaks once timescale gets higher. :/
+    engine.timing.timeScale = 1;
+
 
     for (var i = 0; i < 150; i += 1) {
         var radius = Common.random(6, 10);
