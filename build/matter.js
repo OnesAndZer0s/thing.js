@@ -1,5 +1,9 @@
 /*!
+<<<<<<< HEAD
  * matter-js 0.14.2 by @liabru 2021-01-15
+=======
+ * matter-js 0.14.2 by @liabru 2020-12-21
+>>>>>>> Okay, I fixed the gravity example bug thing, sort of.
  * http://brm.io/matter-js/
  * License MIT
  * 
@@ -2634,6 +2638,7 @@ var Axes = __webpack_require__(15);
             value = settings[property];
             switch (property) {
 
+<<<<<<< HEAD
                 case 'isStatic':
                     Body.setStatic(body, value);
                     break;
@@ -2678,6 +2683,52 @@ var Axes = __webpack_require__(15);
                     break;
                 default:
                     body[property] = value;
+=======
+            case 'isStatic':
+                Body.setStatic(body, value);
+                break;
+            case 'isSleeping':
+                Sleeping.set(body, value);
+                break;
+            case 'mass':
+                Body.setMass(body, value);
+                break;
+            case 'density':
+                Body.setDensity(body, value);
+                break;
+            case 'inertia':
+                Body.setInertia(body, value);
+                break;
+            case 'vertices':
+                Body.setVertices(body, value);
+                break;
+            case 'position':
+                Body.setPosition(body, value);
+                break;
+            case 'angle':
+                Body.setAngle(body, value);
+                break;
+            case 'velocity':
+                Body.setVelocity(body, value);
+                break;
+            case 'angularVelocity':
+                Body.setAngularVelocity(body, value);
+                break;
+            case 'linearDamping':
+                Body.setLinearDamping(body, value);
+                break;
+            case 'angularDamping':
+                Body.setAngularDamping(body, value);
+                break;
+            case 'parts':
+                Body.setParts(body, value);
+                break;
+            case 'centre':
+                Body.setCentre(body, value);
+                break;
+            default:
+                body[property] = value;
+>>>>>>> Okay, I fixed the gravity example bug thing, sort of.
 
             }
         }
@@ -3101,7 +3152,11 @@ var Axes = __webpack_require__(15);
         // update velocity with Verlet integration
         body.velocity.x = (velocityPrevX * frictionAir * correction) + (body.force.x / body.mass) * deltaTimeSquared;
         body.velocity.y = (velocityPrevY * frictionAir * correction) + (body.force.y / body.mass) * deltaTimeSquared;
+<<<<<<< HEAD
         if (body.linearDamping !== 0) { Vector.div(body.velocity, body.linearDamping); }
+=======
+        if(body.linearDamping!==0){Vector.div(body.velocity, body.linearDamping);}
+>>>>>>> Okay, I fixed the gravity example bug thing, sort of.
 
         body.positionPrev.x = body.position.x;
         body.positionPrev.y = body.position.y;
@@ -3110,7 +3165,11 @@ var Axes = __webpack_require__(15);
 
         // update angular velocity with Verlet integration
         body.angularVelocity = (((body.angle - body.anglePrev) * frictionAir * correction) + (body.torque / body.inertia) * deltaTimeSquared);
+<<<<<<< HEAD
         if (body.angularDamping !== 0) { body.angularVelocity /= body.angularDamping; }
+=======
+        if(body.angularDamping!==0){body.angularVelocity /= body.angularDamping;}
+>>>>>>> Okay, I fixed the gravity example bug thing, sort of.
         body.anglePrev = body.angle;
         body.angle += body.angularVelocity;
 
@@ -8497,7 +8556,7 @@ var Body = __webpack_require__(6);
      */
     Engine.update = function(engine, delta, correction) {
         delta = delta || 1000 / 60;
-        correction = correction || 1;
+        correction = correction || 0.1;
 
         var world = engine.world,
             timing = engine.timing,

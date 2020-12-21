@@ -210,50 +210,50 @@ var Axes = require('../geometry/Axes');
             value = settings[property];
             switch (property) {
 
-                case 'isStatic':
-                    Body.setStatic(body, value);
-                    break;
-                case 'isSleeping':
-                    Sleeping.set(body, value);
-                    break;
-                case 'mass':
-                    Body.setMass(body, value);
-                    break;
-                case 'density':
-                    Body.setDensity(body, value);
-                    break;
-                case 'inertia':
-                    Body.setInertia(body, value);
-                    break;
-                case 'vertices':
-                    Body.setVertices(body, value);
-                    break;
-                case 'position':
-                    Body.setPosition(body, value);
-                    break;
-                case 'angle':
-                    Body.setAngle(body, value);
-                    break;
-                case 'velocity':
-                    Body.setVelocity(body, value);
-                    break;
-                case 'angularVelocity':
-                    Body.setAngularVelocity(body, value);
-                    break;
-                case 'linearDamping':
-                    Body.setLinearDamping(body, value);
-                    break;
-                case 'angularDamping':
-                    Body.setAngularDamping(body, value);
-                    break;
-                case 'parts':
-                    Body.setParts(body, value);
-                    break;
-                case 'centre':
-                    Body.setCentre(body, value);
-                    break;
-                default:
-                    body[property] = value;
+            case 'isStatic':
+                Body.setStatic(body, value);
+                break;
+            case 'isSleeping':
+                Sleeping.set(body, value);
+                break;
+            case 'mass':
+                Body.setMass(body, value);
+                break;
+            case 'density':
+                Body.setDensity(body, value);
+                break;
+            case 'inertia':
+                Body.setInertia(body, value);
+                break;
+            case 'vertices':
+                Body.setVertices(body, value);
+                break;
+            case 'position':
+                Body.setPosition(body, value);
+                break;
+            case 'angle':
+                Body.setAngle(body, value);
+                break;
+            case 'velocity':
+                Body.setVelocity(body, value);
+                break;
+            case 'angularVelocity':
+                Body.setAngularVelocity(body, value);
+                break;
+            case 'linearDamping':
+                Body.setLinearDamping(body, value);
+                break;
+            case 'angularDamping':
+                Body.setAngularDamping(body, value);
+                break;
+            case 'parts':
+                Body.setParts(body, value);
+                break;
+            case 'centre':
+                Body.setCentre(body, value);
+                break;
+            default:
+                body[property] = value;
 
             }
         }
@@ -677,7 +677,7 @@ var Axes = require('../geometry/Axes');
         // update velocity with Verlet integration
         body.velocity.x = (velocityPrevX * frictionAir * correction) + (body.force.x / body.mass) * deltaTimeSquared;
         body.velocity.y = (velocityPrevY * frictionAir * correction) + (body.force.y / body.mass) * deltaTimeSquared;
-        if (body.linearDamping !== 0) { Vector.div(body.velocity, body.linearDamping); }
+        if(body.linearDamping!==0){Vector.div(body.velocity, body.linearDamping);}
 
         body.positionPrev.x = body.position.x;
         body.positionPrev.y = body.position.y;
@@ -686,7 +686,7 @@ var Axes = require('../geometry/Axes');
 
         // update angular velocity with Verlet integration
         body.angularVelocity = (((body.angle - body.anglePrev) * frictionAir * correction) + (body.torque / body.inertia) * deltaTimeSquared);
-        if (body.angularDamping !== 0) { body.angularVelocity /= body.angularDamping; }
+        if(body.angularDamping!==0){body.angularVelocity /= body.angularDamping;}
         body.anglePrev = body.angle;
         body.angle += body.angularVelocity;
 
