@@ -1,9 +1,5 @@
 /*!
-<<<<<<< HEAD
  * matter-js 0.14.2 by @liabru 2021-01-15
-=======
- * matter-js 0.14.2 by @liabru 2020-12-21
->>>>>>> Okay, I fixed the gravity example bug thing, sort of.
  * http://brm.io/matter-js/
  * License MIT
  * 
@@ -2638,52 +2634,6 @@ var Axes = __webpack_require__(15);
             value = settings[property];
             switch (property) {
 
-<<<<<<< HEAD
-                case 'isStatic':
-                    Body.setStatic(body, value);
-                    break;
-                case 'isSleeping':
-                    Sleeping.set(body, value);
-                    break;
-                case 'mass':
-                    Body.setMass(body, value);
-                    break;
-                case 'density':
-                    Body.setDensity(body, value);
-                    break;
-                case 'inertia':
-                    Body.setInertia(body, value);
-                    break;
-                case 'vertices':
-                    Body.setVertices(body, value);
-                    break;
-                case 'position':
-                    Body.setPosition(body, value);
-                    break;
-                case 'angle':
-                    Body.setAngle(body, value);
-                    break;
-                case 'velocity':
-                    Body.setVelocity(body, value);
-                    break;
-                case 'angularVelocity':
-                    Body.setAngularVelocity(body, value);
-                    break;
-                case 'linearDamping':
-                    Body.setLinearDamping(body, value);
-                    break;
-                case 'angularDamping':
-                    Body.setAngularDamping(body, value);
-                    break;
-                case 'parts':
-                    Body.setParts(body, value);
-                    break;
-                case 'centre':
-                    Body.setCentre(body, value);
-                    break;
-                default:
-                    body[property] = value;
-=======
             case 'isStatic':
                 Body.setStatic(body, value);
                 break;
@@ -2728,7 +2678,6 @@ var Axes = __webpack_require__(15);
                 break;
             default:
                 body[property] = value;
->>>>>>> Okay, I fixed the gravity example bug thing, sort of.
 
             }
         }
@@ -3152,11 +3101,7 @@ var Axes = __webpack_require__(15);
         // update velocity with Verlet integration
         body.velocity.x = (velocityPrevX * frictionAir * correction) + (body.force.x / body.mass) * deltaTimeSquared;
         body.velocity.y = (velocityPrevY * frictionAir * correction) + (body.force.y / body.mass) * deltaTimeSquared;
-<<<<<<< HEAD
-        if (body.linearDamping !== 0) { Vector.div(body.velocity, body.linearDamping); }
-=======
         if(body.linearDamping!==0){Vector.div(body.velocity, body.linearDamping);}
->>>>>>> Okay, I fixed the gravity example bug thing, sort of.
 
         body.positionPrev.x = body.position.x;
         body.positionPrev.y = body.position.y;
@@ -3165,11 +3110,7 @@ var Axes = __webpack_require__(15);
 
         // update angular velocity with Verlet integration
         body.angularVelocity = (((body.angle - body.anglePrev) * frictionAir * correction) + (body.torque / body.inertia) * deltaTimeSquared);
-<<<<<<< HEAD
-        if (body.angularDamping !== 0) { body.angularVelocity /= body.angularDamping; }
-=======
         if(body.angularDamping!==0){body.angularVelocity /= body.angularDamping;}
->>>>>>> Okay, I fixed the gravity example bug thing, sort of.
         body.anglePrev = body.angle;
         body.angle += body.angularVelocity;
 
@@ -8443,14 +8384,14 @@ var Bounds = __webpack_require__(1);
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
- * The `Matter.Engine` module contains methods for creating and manipulating engines.
- * An engine is a controller that manages updating the simulation of the world.
- * See `Matter.Runner` for an optional game loop utility.
- *
- * See the included usage [examples](https://github.com/liabru/matter-js/tree/master/examples).
- *
- * @class Engine
- */
+* The `Matter.Engine` module contains methods for creating and manipulating engines.
+* An engine is a controller that manages updating the simulation of the world.
+* See `Matter.Runner` for an optional game loop utility.
+*
+* See the included usage [examples](https://github.com/liabru/matter-js/tree/master/examples).
+*
+* @class Engine
+*/
 
 var Engine = {};
 
@@ -8513,7 +8454,7 @@ var Body = __webpack_require__(6);
                 element: element,
                 controller: Render
             };
-
+            
             engine.render = Common.extend(renderDefaults, engine.render);
         }
 
@@ -8556,7 +8497,7 @@ var Body = __webpack_require__(6);
      */
     Engine.update = function(engine, delta, correction) {
         delta = delta || 1000 / 60;
-        correction = correction || 0.1;
+        correction = correction || 1;
 
         var world = engine.world,
             timing = engine.timing,
@@ -8576,51 +8517,7 @@ var Body = __webpack_require__(6);
 
         // get lists of all bodies and constraints, no matter what composites they are in
         var allBodies = Composite.allBodies(world),
-            allConstraints = Composite.allConstraints(world),
-            allComposites = Composite.allComposites(world);
-
-        // WRAP
-        for (i = 0; i < allBodies.length; i += 1) {
-            var body = allBodies[i];
-
-            if (body.wrap) {
-                Body.wrap(body, body.wrap);
-            }
-        }
-
-        for (i = 0; i < allComposites.length; i += 1) {
-            var composite = allComposites[i];
-
-            if (composite.wrap) {
-                Composite.wrap(composite, composite.wrap);
-            }
-        }
-
-
-        // ATTRACTORS
-        for (let i = 0; i < allBodies.length; i += 1) {
-            let bodyA = allBodies[i],
-                attractors = bodyA.attractors;
-
-            if (attractors && attractors.length > 0) {
-                for (let j = i + 1; j < allBodies.length; j += 1) {
-                    let bodyB = allBodies[j];
-
-                    for (let k = 0; k < attractors.length; k += 1) {
-                        let attractor = attractors[k],
-                            forceVector = attractor;
-
-                        if (Common.isFunction(attractor)) {
-                            forceVector = attractor(bodyA, bodyB);
-                        }
-
-                        if (forceVector) {
-                            Body.applyForce(bodyB, bodyB.position, forceVector);
-                        }
-                    }
-                }
-            }
-        }
+            allConstraints = Composite.allConstraints(world);
 
         // @if DEBUG
         // reset metrics logging
@@ -8677,17 +8574,9 @@ var Body = __webpack_require__(6);
             Sleeping.afterCollisions(pairs.list, timing.timeScale);
 
         // trigger collision events
-        if (pairs.collisionStart.length > 0) {
+        if (pairs.collisionStart.length > 0)
             Events.trigger(engine, 'collisionStart', { pairs: pairs.collisionStart });
-            pairs.collisionStart.map(function(pair) {
-                Events.trigger(pair.bodyA, 'collideStart', { pair: pair });
-                Events.trigger(pair.bodyB, 'collideStart', { pair: pair });
-                pair.bodyA._mceOC &&
-                    pair.bodyA._mceOC(pair);
-                pair.bodyB._mceOC &&
-                    pair.bodyB._mceOC(pair);
-            });
-        }
+
         // iteratively resolve position between collisions
         Resolver.preSolvePosition(pairs.list);
         for (i = 0; i < engine.positionIterations; i++) {
@@ -8709,29 +8598,12 @@ var Body = __webpack_require__(6);
         }
 
         // trigger collision events
-        if (pairs.collisionActive.length > 0) {
+        if (pairs.collisionActive.length > 0)
             Events.trigger(engine, 'collisionActive', { pairs: pairs.collisionActive });
-            pairs.collisionActive.map(function(pair) {
-                Events.trigger(pair.bodyA, 'collideActive', { pair: pair });
-                Events.trigger(pair.bodyB, 'collideActive', { pair: pair });
-                pair.bodyA._mceOCA &&
-                    pair.bodyA._mceOCA(pair);
-                pair.bodyB._mceOCA &&
-                    pair.bodyB._mceOCA(pair);
-            });
-        }
 
-        if (pairs.collisionEnd.length > 0) {
+        if (pairs.collisionEnd.length > 0)
             Events.trigger(engine, 'collisionEnd', { pairs: pairs.collisionEnd });
-            pairs.collisionEnd.map(function(pair) {
-                Events.trigger(pair.bodyA, 'collideEnd', { pair: pair });
-                Events.trigger(pair.bodyB, 'collideEnd', { pair: pair });
-                pair.bodyA._mceOCE &&
-                    pair.bodyA._mceOCE(pair);
-                pair.bodyB._mceOCE &&
-                    pair.bodyB._mceOCE(pair);
-            });
-        }
+
         // @if DEBUG
         // update metrics log
         Metrics.update(engine.metrics, engine);
@@ -8744,7 +8616,7 @@ var Body = __webpack_require__(6);
 
         return engine;
     };
-
+    
     /**
      * Merges two engines by keeping the configuration of `engineA` but replacing the world with the one from `engineB`.
      * @method merge
@@ -8753,7 +8625,7 @@ var Body = __webpack_require__(6);
      */
     Engine.merge = function(engineA, engineB) {
         Common.extend(engineA, engineB);
-
+        
         if (engineB.world) {
             engineA.world = engineB.world;
 
@@ -8776,7 +8648,7 @@ var Body = __webpack_require__(6);
      */
     Engine.clear = function(engine) {
         var world = engine.world;
-
+        
         Pairs.clear(engine.pairs);
 
         var broadphase = engine.broadphase;
@@ -8817,7 +8689,7 @@ var Body = __webpack_require__(6);
         if ((gravity.x === 0 && gravity.y === 0) || gravityScale === 0) {
             return;
         }
-
+        
         for (var i = 0; i < bodies.length; i++) {
             var body = bodies[i];
 
@@ -8860,63 +8732,63 @@ var Body = __webpack_require__(6);
      */
 
     /**
-     * Fired just before an update
-     *
-     * @event beforeUpdate
-     * @param {} event An event object
-     * @param {number} event.timestamp The engine.timing.timestamp of the event
-     * @param {} event.source The source object of the event
-     * @param {} event.name The name of the event
-     */
+    * Fired just before an update
+    *
+    * @event beforeUpdate
+    * @param {} event An event object
+    * @param {number} event.timestamp The engine.timing.timestamp of the event
+    * @param {} event.source The source object of the event
+    * @param {} event.name The name of the event
+    */
 
     /**
-     * Fired after engine update and all collision events
-     *
-     * @event afterUpdate
-     * @param {} event An event object
-     * @param {number} event.timestamp The engine.timing.timestamp of the event
-     * @param {} event.source The source object of the event
-     * @param {} event.name The name of the event
-     */
+    * Fired after engine update and all collision events
+    *
+    * @event afterUpdate
+    * @param {} event An event object
+    * @param {number} event.timestamp The engine.timing.timestamp of the event
+    * @param {} event.source The source object of the event
+    * @param {} event.name The name of the event
+    */
 
     /**
-     * Fired after engine update, provides a list of all pairs that have started to collide in the current tick (if any)
-     *
-     * @event collisionStart
-     * @param {} event An event object
-     * @param {} event.pairs List of affected pairs
-     * @param {number} event.timestamp The engine.timing.timestamp of the event
-     * @param {} event.source The source object of the event
-     * @param {} event.name The name of the event
-     */
+    * Fired after engine update, provides a list of all pairs that have started to collide in the current tick (if any)
+    *
+    * @event collisionStart
+    * @param {} event An event object
+    * @param {} event.pairs List of affected pairs
+    * @param {number} event.timestamp The engine.timing.timestamp of the event
+    * @param {} event.source The source object of the event
+    * @param {} event.name The name of the event
+    */
 
     /**
-     * Fired after engine update, provides a list of all pairs that are colliding in the current tick (if any)
-     *
-     * @event collisionActive
-     * @param {} event An event object
-     * @param {} event.pairs List of affected pairs
-     * @param {number} event.timestamp The engine.timing.timestamp of the event
-     * @param {} event.source The source object of the event
-     * @param {} event.name The name of the event
-     */
+    * Fired after engine update, provides a list of all pairs that are colliding in the current tick (if any)
+    *
+    * @event collisionActive
+    * @param {} event An event object
+    * @param {} event.pairs List of affected pairs
+    * @param {number} event.timestamp The engine.timing.timestamp of the event
+    * @param {} event.source The source object of the event
+    * @param {} event.name The name of the event
+    */
 
     /**
-     * Fired after engine update, provides a list of all pairs that have ended collision in the current tick (if any)
-     *
-     * @event collisionEnd
-     * @param {} event An event object
-     * @param {} event.pairs List of affected pairs
-     * @param {number} event.timestamp The engine.timing.timestamp of the event
-     * @param {} event.source The source object of the event
-     * @param {} event.name The name of the event
-     */
+    * Fired after engine update, provides a list of all pairs that have ended collision in the current tick (if any)
+    *
+    * @event collisionEnd
+    * @param {} event An event object
+    * @param {} event.pairs List of affected pairs
+    * @param {number} event.timestamp The engine.timing.timestamp of the event
+    * @param {} event.source The source object of the event
+    * @param {} event.name The name of the event
+    */
 
     /*
-     *
-     *  Properties Documentation
-     *
-     */
+    *
+    *  Properties Documentation
+    *
+    */
 
     /**
      * An integer `Number` that specifies the number of position iterations to perform each update.
@@ -9019,6 +8891,7 @@ var Body = __webpack_require__(6);
      */
 
 })();
+
 
 /***/ }),
 /* 22 */
